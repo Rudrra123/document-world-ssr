@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'protect-pdf-password', component: ProtectPdfPasswordComponent },
   { path: 'remove-pdf-password', component: RemovePdfPasswordComponent },
   { path: '', redirectTo: '/pdf-tools', pathMatch: 'full' },
-  { path: '**', redirectTo: '/pd
+  { path: '**', redirectTo: '/pdf-tools' }
 ];
 
 
