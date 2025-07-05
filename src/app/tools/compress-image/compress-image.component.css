@@ -1,0 +1,121 @@
+.tool-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+  }
+  
+  .main-header h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #444;
+  }
+  .main-header .tagline {
+    font-size: 1rem;
+    color: #777;
+  }
+  
+  .workspace {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-top: 25px;
+  }
+  
+  .tool-card {
+    flex: 1 1 60%;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+  }
+  
+  .card-preview {
+    flex: 1 1 35%;
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+  }
+  
+  .card-preview .preview-img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .upload-box {
+    background: #f3f3f3;
+    border: 2px dashed #bbb;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    margin: 20px 0;
+    border-radius: 10px;
+  }
+  
+  .upload-text {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .form-group, .resize-inputs {
+    margin-bottom: 20px;
+  }
+  .form-select, .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .input-group {
+    margin-bottom: 10px;
+  }
+  
+  .action-btn {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .action-btn:hover {
+    background-color: #574fe5;
+  }
+  
+  .progress {
+    background: #eee;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  .bar {
+    background: #28a745;
+    height: 8px;
+    transition: width 0.3s ease;
+  }
+  
+  .result {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .download-link {
+    display: inline-block;
+    margin-top: 10px;
+    background: #6c63ff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+  

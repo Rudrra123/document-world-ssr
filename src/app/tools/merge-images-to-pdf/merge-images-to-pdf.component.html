@@ -1,0 +1,87 @@
+<div class="merge-images-to-pdf-card animated-card">
+    <div class="card-header animate__animated animate__fadeInDown">
+      <h2>🎴 Merge Images to PDF</h2>
+      <p class="sub-heading">Select multiple images and merge them into a single PDF document.</p>
+    </div>
+  
+    <div class="card-content">
+      <label class="upload-area animate__animated animate__fadeInUp"
+             [class.has-files]="selectedFiles.length > 0"
+             (dragover)="preventDefaults($event)"
+             (drop)="onFilesDropped($event)">
+        <input #fileInput type="file" accept="image/*" multiple (change)="onFilesSelected($event)" hidden />
+        <div class="upload-prompt" (click)="fileInput.click()">
+          <ng-container *ngIf="!selectedFiles.length">
+            <i class="fas fa-cloud-upload-alt upload-icon animate__animated animate__bounce"></i>
+            <p class="upload-text">Click to browse or drag & drop images here</p>
+            <span class="file-types">Supports JPG, PNG, GIF, BMP</span>
+          </ng-container>
+          <ng-container *ngIf="selectedFiles.length">
+            <div class="selected-files-summary animate__animated animate__fadeIn">
+              <i class="fas fa-check-circle success-icon"></i>
+              <p>{{ selectedFiles.length }} image(s) selected</p>
+              <button type="button" class="clear-selection-btn animate__animated animate__shakeX"
+                      (click)="$event.stopPropagation(); reset()">Clear Selection</button>
+            </div>
+            <div class="selected-file-list animate__animated animate__fadeInUp">
+              <p>Selected Files:</p>
+              <ul>
+                <li *ngFor="let file of selectedFiles" class="animate__animated animate__fadeInLeft list-item-fade">
+                  <i class="fas fa-file-image file-icon"></i> {{ file.name }}
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+        </div>
+      </label>
+  
+      <div class="image-preview-section animate__animated animate__fadeIn" *ngIf="selectedFiles.length > 0 && previewUrl">
+        <h3>First Image Preview:</h3>
+        <div class="image-preview-wrapper">
+          <img [src]="previewUrl" alt="Selected Image Preview" class="preview-img fade-in-img" />
+        </div>
+        <p class="preview-caption">{{ selectedFiles[0].name }}<br>{{ (selectedFiles[0].size / 1024).toFixed(1) }} KB</p>
+      </div>
+  
+      <div class="usage-limit-info animate__animated animate__fadeIn" *ngIf="!isPremiumUser && selectedFiles.length > 0">
+        <p *ngIf="freeUsesRemaining > 0">
+          You can merge <span class="highlight-count">{{ freeUsesRemaining }}</span> more set(s) of images today.
+        </p>
+        <p *ngIf="freeUsesRemaining <= 0" class="limit-reached-message">
+          Daily free limit reached! <a href="/pricing">Upgrade to Premium</a> for unlimited merges.
+        </p>
+        <p *ngIf="selectedFiles.length > freeFileLimit && !isPremiumUser" class="file-count-warning">
+          Free users can merge up to {{ freeFileLimit }} files. Consider upgrading for larger merges.
+        </p>
+      </div>
+  
+      <button class="convert-btn animate__animated"
+              [ngClass]="{'animate__pulse': !progress, 'animate__flash': progress}"
+              [disabled]="!selectedFiles.length || progress > 0 || (!isPremiumUser && freeUsesRemaining <= 0) || (!isPremiumUser && selectedFiles.length > freeFileLimit)"
+              (click)="upload()">
+        <ng-container *ngIf="progress === 0">
+          <span class="btn-spinner"><i class="fas fa-rocket launch-icon"></i> Merge to PDF</span>
+        </ng-container>
+        <ng-container *ngIf="progress > 0">
+          <span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i> Merging... {{ progress }}%</span>
+        </ng-container>
+      </button>
+  
+      <div class="progress-container animate__animated animate__fadeIn" *ngIf="progress > 0">
+        <div class="progress-bar" [style.width.%]="progress"></div>
+        <p>{{ progress }}% Uploading...</p>
+      </div>
+  
+      <div class="download-section animate__animated animate__zoomIn" *ngIf="downloadUrl">
+        <p class="success-message">✅ PDF created successfully!</p>
+        <a [href]="downloadUrl" download="merged.pdf" class="download-link animate__animated animate__heartBeat">⬇ Download PDF</a>
+        <button type="button" class="reset-btn animate__animated animate__fadeIn" (click)="reset()">Merge Another</button>
+      </div>
+  
+      <div class="error-section animate__animated animate__shakeX" *ngIf="errorMessage">
+        <p class="error-message">❌ Error: {{ errorMessage }}</p>
+        <button type="button" class="reset-btn animate__animated animate__fadeIn" (click)="reset()">Try Again</button>
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,12 @@
+<div class="tool-container">
+    <h2>📄 Convert PDF to Word</h2>
+  
+    <input type="file" accept=".pdf" (change)="onFileSelected($event)" />
+    <button [disabled]="!selectedFile" (click)="upload()">Convert</button>
+  
+    <p *ngIf="progress > 0">Uploading... {{ progress }}%</p>
+  
+    <!-- Optional: show message after download -->
+    <p *ngIf="downloadTriggered">✅ Download started and fields cleared!</p>
+  </div>
+  

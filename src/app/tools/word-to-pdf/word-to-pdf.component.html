@@ -1,0 +1,5 @@
+<div class="tool-container"> <h2>📝 Convert Word (.docx) to PDF</h2>
+    <input type="file" accept=".docx" (change)="onFileSelected($event)" />
+    <button (click)="upload()" [disabled]="!selectedFile">Convert</button>
+    
+    <p *ngIf="progress > 0">Uploading... {{ progress }}%</p> </div>

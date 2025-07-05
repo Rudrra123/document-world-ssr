@@ -1,0 +1,84 @@
+.tool-card {
+    background: #ffffff;
+    padding: 30px;
+    max-width: 480px;
+    margin: 50px auto;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  h2 {
+    margin-bottom: 6px;
+    color: #333;
+  }
+  
+  .sub {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  
+  .upload-box {
+    display: block;
+    background-color: #f4f6fa;
+    border: 2px dashed #ccc;
+    padding: 30px 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: background 0.3s;
+  }
+  
+  .upload-box:hover {
+    background-color: #eaeaea;
+  }
+  
+  .upload-text {
+    color: #444;
+    font-size: 15px;
+  }
+  
+  .convert-btn {
+    background: linear-gradient(to right, #007bff, #0056d2);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .convert-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .progress-container {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background-color: #28a745;
+    transition: width 0.3s ease;
+    border-radius: 5px;
+  }
+  
+  .download-section {
+    margin-top: 20px;
+    background: #e9ffe9;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #8cd98c;
+  }
+  
+  .download-link {
+    color: #007bff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  

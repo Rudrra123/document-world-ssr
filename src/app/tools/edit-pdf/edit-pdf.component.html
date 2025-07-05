@@ -1,0 +1,16 @@
+<div class="tool-card">
+    <h2>✏️ Edit Text in PDF</h2>
+  
+    <input type="file" accept="application/pdf" (change)="onFileSelected($event)" /><br />
+  
+    <input type="text" placeholder="Text to replace" [(ngModel)]="oldText" /><br />
+    <input type="text" placeholder="Replacement text" [(ngModel)]="newText" /><br />
+    <input type="color" [(ngModel)]="color" /> <label>Text Color</label><br />
+  
+    <button (click)="editPdf()" [disabled]="!selectedFile || !oldText || !newText">Edit PDF</button>
+  
+    <div *ngIf="progress > 0">Uploading... {{ progress }}%</div>
+  
+    <a *ngIf="downloadUrl" [href]="downloadUrl" download="edited.pdf">⬇ Download Edited PDF</a>
+  </div>
+  

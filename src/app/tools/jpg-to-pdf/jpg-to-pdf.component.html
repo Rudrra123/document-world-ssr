@@ -1,0 +1,25 @@
+<div class="tool-card">
+    <h2>🖼️ JPG / PNG to PDF Converter</h2>
+    <p class="sub">Upload any image and get a clean PDF instantly</p>
+  
+    <label class="upload-box">
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+      <div class="upload-text">
+        <span *ngIf="!selectedFile">Click to upload or drag & drop image</span>
+        <span *ngIf="selectedFile">✅ Selected: {{ selectedFile.name }}</span>
+      </div>
+    </label>
+  
+    <button class="convert-btn" [disabled]="!selectedFile" (click)="upload()">🚀 Convert to PDF</button>
+  
+    <div class="progress-container" *ngIf="progress > 0">
+      <div class="progress-bar" [style.width.%]="progress"></div>
+      <p>{{ progress }}% Uploading...</p>
+    </div>
+  
+    <div class="download-section" *ngIf="downloadUrl">
+      <p>✅ Conversion successful!</p>
+      <a [href]="downloadUrl" download="converted.pdf" class="download-link">⬇ Download PDF</a>
+    </div>
+  </div>
+  

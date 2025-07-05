@@ -1,0 +1,20 @@
+.tool-container {
+    padding: 20px;
+    border: 1px solid #ccc;
+    max-width: 500px;
+    margin: 30px auto;
+    text-align: center;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    }
+    
+    input[type="file"] {
+    margin: 10px 0;
+    }
+    
+    button {
+    margin: 10px 0;
+    padding: 6px 14px;
+    }
+    
+    

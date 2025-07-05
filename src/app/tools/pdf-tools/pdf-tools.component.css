@@ -1,0 +1,572 @@
+/* Import Google Font (Poppins for modern feel) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+  background: linear-gradient(135deg, #e0f2f7 0%, #c1d9f0 100%); /* Soft gradient background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Poppins', sans-serif; /* Apply Poppins to body */
+  color: #333; /* Default text color */
+}
+
+/* Tool Card Container */
+.tool-card {
+  background: #ffffff;
+  padding: 40px; /* Increased padding */
+  margin-left: 20%;
+    margin-right: 20%;
+  border-radius: 25px; /* Even more rounded corners */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18); /* Deeper, softer shadow */
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e0e0e0; /* Subtle border */
+}
+
+/* Card Header */
+.card-header {
+  margin-bottom: 30px; /* More space below header */
+}
+
+.card-header h2 {
+  font-size: 2.2rem; /* Larger heading */
+  color: #2c3e50; /* Darker blue-gray for heading */
+  margin-bottom: 10px;
+  font-weight: 700; /* Bolder */
+  letter-spacing: -0.5px;
+}
+
+.sub-heading {
+  font-size: 1.1rem; /* Slightly larger sub-heading */
+  color: #7f8c8d; /* Muted gray for sub-heading */
+  font-weight: 400;
+}
+
+/* Mode Selection */
+.mode-select {
+  margin-bottom: 40px; /* More space below select */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px; /* Space between label and select */
+}
+
+.mode-select label {
+  font-size: 1.1rem;
+  color: #4a69bd; /* Blue for label */
+  font-weight: 500;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+  min-width: 250px; /* Ensure sufficient width */
+}
+
+select {
+  padding: 12px 20px; /* More padding */
+  font-size: 1.05rem;
+  border-radius: 12px; /* Nicely rounded */
+  border: 2px solid #a4bded; /* More prominent blue border */
+  outline: none;
+  background-color: #f7fbff; /* Very light blue background */
+  color: #34495e; /* Darker text in select */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* More noticeable shadow */
+  transition: all 0.3s ease-in-out;
+  appearance: none; /* Hide default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+select:hover {
+  border-color: #5d8af8; /* Brighter blue on hover */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+select:focus {
+  border-color: #4CAF50; /* Green highlight on focus */
+  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.25); /* Green focus glow */
+}
+
+.custom-select-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #4a69bd; /* Blue arrow */
+  pointer-events: none;
+}
+
+/* Upload Area (Common styles for single & multiple) */
+.upload-box {
+  background-color: #f0f7ff; /* Lighter blue for upload area */
+  border: 3px dashed #89cff0; /* Soft blue dashed border */
+  padding: 60px 30px; /* Even more padding for larger target */
+  cursor: pointer;
+  border-radius: 20px; /* Very rounded */
+  margin-bottom: 40px; /* More space below upload */
+  transition: all 0.4s ease-in-out;
+  display: flex;
+  flex-direction: column; /* Stack icon and text */
+  align-items: center;
+  justify-content: center;
+  min-height: 180px; /* Minimum height for better appearance */
+  position: relative;
+  color: #555; /* Default text color in upload box */
+}
+
+.upload-box:hover {
+  background-color: #e3f2fd; /* Slightly darker blue on hover */
+  transform: translateY(-7px); /* More pronounced lift */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); /* Clearer shadow on hover */
+  border-color: #4b92c4; /* Darker blue border on hover */
+}
+
+/* Drag over effect */
+.upload-box.drag-over {
+  background-color: #d1e7fa; /* Even darker blue when dragging */
+  border-color: #2196f3; /* Bright blue border */
+  box-shadow: 0 0 30px rgba(33, 150, 243, 0.5); /* Stronger glow on drag */
+  animation: dragOverPulseBorder 1.8s infinite alternate; /* Pulsing border */
+}
+
+@keyframes dragOverPulseBorder {
+  0% { border-color: #89cff0; }
+  50% { border-color: #2196f3; }
+  100% { border-color: #89cff0; }
+}
+
+.upload-text {
+  font-size: 1.2rem; /* Larger text */
+  font-weight: 500;
+  display: flex;
+  flex-direction: column; /* Stack icon and text */
+  align-items: center;
+  gap: 15px; /* Space between icon and text */
+  color: #555;
+}
+
+.upload-icon {
+  font-size: 3.5rem; /* Larger icon */
+  color: #4a69bd; /* Blue icon */
+  transition: transform 0.3s ease;
+}
+
+.upload-box:hover .upload-icon {
+  transform: translateY(-5px) scale(1.1); /* Subtle lift and bounce on icon hover */
+}
+
+.upload-prompt {
+  color: #555; /* Ensure good contrast */
+}
+
+.file-selected {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #28a745; /* Green for selected file */
+  font-weight: 600; /* Bolder text for selected file */
+  animation: fadeIn 0.6s ease;
+}
+
+.file-selected .success-icon {
+  color: #28a745;
+  font-size: 1.8rem; /* Larger checkmark icon */
+}
+
+.file-name {
+  max-width: 90%; /* Prevent long file names from breaking layout */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- Merge Images Specific Styles --- */
+.merge-images-upload-area {
+  padding: 30px; /* Slightly less padding for the list of files */
+  min-height: 250px; /* Allow more height for file list */
+  justify-content: flex-start; /* Align content to the top */
+}
+
+.merge-images-upload-area .upload-prompt {
+    width: 100%; /* Ensure prompt takes full width inside flex container */
+    justify-content: center; /* Center content horizontally */
+}
+
+.merge-images-upload-area.has-files {
+    border-color: #28a745; /* Green border when files are selected */
+    background-color: #e6ffe6; /* Light green background */
+}
+
+.file-types {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-top: 5px;
+}
+
+.selected-files-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #28a745;
+  margin-bottom: 15px; /* Space below summary */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.selected-files-summary .success-icon {
+    font-size: 2rem;
+}
+
+.clear-selection-btn {
+  background-color: #f44336; /* Red for clear button */
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-left: 15px;
+}
+
+.clear-selection-btn:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+}
+
+.selected-file-list {
+  text-align: left;
+  width: 90%; /* Constrain width for list */
+  margin-top: 15px;
+  max-height: 150px; /* Limit height for scrollable list */
+  overflow-y: auto; /* Enable scrolling */
+  border-top: 1px dashed #cccccc;
+  padding-top: 15px;
+}
+
+.selected-file-list p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 10px;
+}
+
+.selected-file-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected-file-list li {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dotted #e0e0e0;
+}
+
+.selected-file-list li:last-child {
+  border-bottom: none;
+}
+
+.selected-file-list .file-icon {
+  margin-right: 8px;
+  color: #4a69bd;
+}
+
+.list-item-fade {
+    animation-duration: 0.5s;
+}
+
+.image-preview-section {
+  margin-top: 30px;
+  padding: 25px;
+  background-color: #f7fbff;
+  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.image-preview-section h3 {
+  font-size: 1.3rem;
+  color: #34495e;
+  margin-bottom: 15px;
+}
+
+.image-preview-wrapper {
+  max-width: 200px; /* Control preview image size */
+  max-height: 200px;
+  overflow: hidden;
+  margin: 0 auto 15px auto;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  display: flex; /* For centering smaller images */
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.preview-caption {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  line-height: 1.4;
+}
+
+.fade-in-img {
+    animation: fadeIn 0.8s ease;
+}
+
+.usage-limit-info {
+  background-color: #fff3cd; /* Light yellow for info */
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-top: 30px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.usage-limit-info .highlight-count {
+  font-weight: 700;
+  color: #d39e00;
+}
+
+.usage-limit-info .limit-reached-message {
+  font-weight: 600;
+  color: #dc3545; /* Red for limit reached */
+}
+
+.usage-limit-info .file-count-warning {
+    font-weight: 600;
+    color: #dc3545; /* Red for file count warning */
+}
+
+.usage-limit-info a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.usage-limit-info a:hover {
+  text-decoration: underline;
+}
+/* --- End Merge Images Specific Styles --- */
+
+
+/* Convert Button (Common styles) */
+.convert-btn {
+  background: linear-gradient(45deg, #007bff, #0056d2); /* More dynamic gradient */
+  border: none;
+  padding: 18px 45px; /* More generous padding */
+  border-radius: 15px; /* More rounded */
+  color: white;
+  font-size: 1.25rem; /* Larger font */
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.8px;
+  box-shadow: 0 10px 25px rgba(0, 90, 210, 0.4); /* Stronger button shadow */
+  transition: background 0.4s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; /* Space between icon and text */
+  width: 100%; /* Full width button */
+  max-width: 300px; /* Max width for central alignment */
+  margin: 40px auto 40px auto; /* Center button and add bottom margin */
+}
+
+.convert-btn:hover {
+  background: linear-gradient(45deg, #0056d2, #003f99); /* Darker gradient on hover */
+  transform: translateY(-5px); /* More noticeable lift on hover */
+  box-shadow: 0 15px 35px rgba(0, 90, 210, 0.5); /* Enhanced shadow on hover */
+}
+
+.convert-btn:disabled {
+  background: #cccccc;
+  color: #888888;
+  animation: none;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.launch-icon, .fa-spinner {
+  font-size: 1.4rem; /* Icon size in button */
+}
+
+/* Progress Bar (Common styles) */
+.progress-container {
+  margin-top: 30px;
+  animation: fadeIn 0.6s ease forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* More space between bar and text */
+}
+
+.progress-bar {
+  height: 18px; /* Thicker bar */
+  background-color: #4CAF50; /* Vibrant green */
+  width: 0%;
+  border-radius: 10px; /* More rounded */
+  transition: width 0.4s ease-out, background-color 0.4s ease;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
+}
+
+.progress-text {
+  font-size: 1.1rem;
+  color: #555;
+  font-weight: 500;
+}
+
+/* Download Confirmation (Common styles) */
+.download-section {
+  margin-top: 40px;
+  background: #e6ffe6; /* Lighter green background */
+  padding: 25px; /* More padding */
+  border-radius: 18px; /* More rounded */
+  border: 2px solid #77dd77; /* More vibrant border */
+  animation: animate__zoomIn 0.7s ease-out forwards; /* Use Animate.css class directly */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* Space between message and button */
+  box-shadow: 0 8px 20px rgba(46, 139, 87, 0.2); /* Shadow for success section */
+}
+
+.success-message {
+  color: #2e8b57;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.success-icon-large {
+  color: #4CAF50; /* Green checkmark */
+  font-size: 2.5rem; /* Larger checkmark */
+  animation: animate__bounceIn 0.8s ease-out; /* Animate.css bounce for checkmark */
+}
+
+.download-link {
+  background: linear-gradient(45deg, #28a745, #218838); /* Green gradient for download link */
+  color: white;
+  padding: 12px 25px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+  transition: all 0.3s ease;
+}
+
+.download-link:hover {
+  background: linear-gradient(45deg, #218838, #1e7e34);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+}
+
+
+/* Reset Button (Common styles) */
+.reset-btn {
+  background: linear-gradient(45deg, #6c757d, #495057); /* Gray gradient */
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-size: 1.0rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.reset-btn:hover {
+  background: linear-gradient(45deg, #5a6268, #343a40); /* Darker gray on hover */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* Error Section (Common styles) */
+.error-section {
+    margin-top: 40px;
+    background: #f8d7da; /* Light red for error */
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.error-message {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Base Animate.css Utility Classes (already in your HTML but ensure CSS consistency) */
+.animate__animated.animate__fadeIn {
+  animation-duration: 0.7s;
+}
+.animate__animated.animate__fadeInDown {
+  animation-duration: 0.8s;
+}
+.animate__animated.animate__fadeInUp {
+  animation-duration: 0.8s;
+}
+.animate__animated.animate__bounce { /* For upload icon */
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+}
+.animate__animated.animate__pulse { /* For convert button */
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+}
+.animate__animated.animate__flash { /* For convert button during progress */
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+.animate__animated.animate__zoomIn {
+  animation-duration: 0.7s;
+}
+.animate__animated.animate__bounceIn {
+  animation-duration: 0.8s;
+}
+.animate__animated.animate__shakeX {
+    animation-duration: 0.8s;
+}
+.animate__animated.animate__heartBeat {
+    animation-duration: 1.2s;
+    animation-iteration-count: infinite;
+}
