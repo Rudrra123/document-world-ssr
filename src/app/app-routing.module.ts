@@ -17,7 +17,9 @@ const routes: Routes = [
   { path: 'word-to-pdf', component: WordToPdfComponent },
   { path: 'merge-images-to-pdf', component: MergeImagesToPdfComponent },
   { path: 'protect-pdf-password', component: ProtectPdfPasswordComponent },
-  { path: 'remove-pdf-password', component: RemovePdfPasswordComponent }
+  { path: 'remove-pdf-password', component: RemovePdfPasswordComponent },
+  { path: '', redirectTo: '/pdf-tools', pathMatch: 'full' },
+  { path: '**', redirectTo: '/pd
 ];
 
 
