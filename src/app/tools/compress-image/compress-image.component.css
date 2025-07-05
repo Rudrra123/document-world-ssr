@@ -1,121 +1,513 @@
-.tool-container {
-    max-width: 1100px;
-    margin: 0 auto;
+/* --- Base Styles --- */
+.image-optimizer-container {
+    max-width: 1200px;
+    margin: 40px auto;
     padding: 30px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     color: #333;
-  }
-  
-  .main-header h1 {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: #444;
-  }
-  .main-header .tagline {
-    font-size: 1rem;
-    color: #777;
-  }
-  
-  .workspace {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
-    margin-top: 25px;
-  }
-  
-  .tool-card {
-    flex: 1 1 60%;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-  }
-  
-  .card-preview {
-    flex: 1 1 35%;
-    background: #f8f8f8;
-    padding: 20px;
-    border-radius: 12px;
+
+    /* NEW: Animated Gradient Background */
+    background: linear-gradient(135deg, #f7f9fc, #e9eff5); /* Initial subtle gradient */
+    background-size: 400% 400%; /* Make gradient larger than container */
+    animation: gradientShift 15s ease infinite alternate; /* Subtle, slow animation */
+
+    border-radius: 20px; /* Slightly more rounded */
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease; /* Smooth transition for background changes */
+}
+
+/* NEW: Keyframes for the gradient animation */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- Header --- */
+.optimizer-header {
     text-align: center;
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
-  }
-  
-  .card-preview .preview-img {
-    max-width: 100%;
-    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.optimizer-header h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #2c3e50; /* Darker, more professional blue-grey */
     margin-bottom: 10px;
-  }
-  
-  .upload-box {
-    background: #f3f3f3;
-    border: 2px dashed #bbb;
-    padding: 30px;
+    letter-spacing: -0.5px; /* Slightly tighter text */
+}
+.optimizer-header h1 i {
+    color: #4a69bd; /* Match primary accent */
+}
+
+.optimizer-header .tagline {
+    font-size: 1.1rem;
+    color: #748b9f; /* Slightly darker muted grey */
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* --- Workspace Layout --- */
+.optimizer-workspace {
+    display: flex;
+    gap: 40px; /* Increased gap for better spacing */
+    align-items: flex-start;
+}
+
+/* --- Control Panel (Left) --- */
+.control-panel {
+    flex: 1;
+    min-width: 450px;
+    background: #ffffff;
+    padding: 35px; /* More padding */
+    border-radius: 18px; /* Consistent rounding */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07); /* Lighter, more diffused shadow */
+    border: 1px solid #e0e6ec; /* Subtle border */
+}
+
+.setting-group {
+    margin-bottom: 30px; /* Consistent spacing */
+}
+
+.setting-group-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px; /* Increased gap */
+    margin-bottom: 30px;
+}
+.setting-group-grid.two-columns {
+    grid-template-columns: 1fr 1fr;
+}
+
+
+.setting-label {
+    display: block;
+    font-size: 0.98rem; /* Slightly larger */
+    font-weight: 600;
+    color: #4a69bd; /* Primary brand color for labels */
+    margin-bottom: 10px; /* More space below label */
+}
+.setting-label i {
+    margin-right: 8px;
+    color: #8c9bbd; /* Softer icon color */
+}
+
+.app-select, .app-input {
+    width: 100%;
+    padding: 14px 18px; /* More padding */
+    font-size: 1rem;
+    border: 1px solid #d3dee6; /* Light grey border */
+    border-radius: 10px; /* More rounded inputs */
+    background-color: #fcfdfe; /* Very light, almost white background */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.app-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%238697a8' stroke-width='2' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Slightly darker arrow */
+    background-repeat: no-repeat;
+    background-position: right 15px center; /* Adjusted position */
+    background-size: 18px;
+}
+
+.app-input:focus, .app-select:focus {
+    border-color: #6c63ff; /* Focus color */
+    box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.2); /* Softer, slightly larger glow */
+    outline: none;
+}
+
+/* --- Upload Zone --- */
+.upload-zone {
+    background: #eef2ff; /* Light blueish background */
+    border: 2px dashed #99aaff; /* Primary color dashed border */
+    padding: 45px; /* More padding */
     text-align: center;
     cursor: pointer;
-    margin: 20px 0;
-    border-radius: 10px;
-  }
-  
-  .upload-text {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  .form-group, .resize-inputs {
-    margin-bottom: 20px;
-  }
-  .form-select, .form-control {
+    margin-bottom: 35px;
+    border-radius: 15px; /* Consistent rounding */
+    transition: background 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px; /* Ensure sufficient height */
+}
+
+.upload-zone:hover {
+    background: #e2e8fa; /* Slightly darker on hover */
+    border-color: #7b8bff;
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Increased gap */
+}
+
+.upload-icon {
+    font-size: 4rem; /* Larger icon */
+    color: #6c63ff; /* Primary color */
+    margin-bottom: 18px;
+}
+
+.upload-prompt {
+    font-size: 1.2rem; /* Clearer text */
+    font-weight: 500;
+    color: #4a69bd;
+}
+
+.upload-hint {
+    font-size: 0.95rem;
+    color: #8899a6;
+}
+
+.file-uploaded-icon {
+    font-size: 4rem; /* Larger icon */
+    color: #28a745; /* Success green */
+    margin-bottom: 15px;
+}
+
+.file-name-display {
+    font-size: 1.15rem; /* Slightly larger */
+    font-weight: 600;
+    color: #34495e; /* Darker text */
+    word-break: break-all;
+}
+
+.file-size-display {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    margin-top: -5px;
+}
+
+.clear-file-btn {
+    background: #e9ecef; /* Lighter grey */
+    color: #6c757d; /* Darker grey text */
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px; /* More rounded */
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.clear-file-btn:hover {
+    background: #dde2e6;
+    color: #495057;
+}
+
+
+/* --- Action Button --- */
+.process-button {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  .input-group {
-    margin-bottom: 10px;
-  }
-  
-  .action-btn {
-    background-color: #6c63ff;
+    background-color: #6c63ff; /* Primary action color */
     color: white;
     border: none;
-    padding: 12px 25px;
-    font-size: 1rem;
-    font-weight: 500;
-    border-radius: 8px;
+    padding: 16px 30px; /* More padding */
+    font-size: 1.15rem; /* Slightly larger text */
+    font-weight: 600;
+    border-radius: 12px; /* More rounded */
     cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  
-  .action-btn:hover {
-    background-color: #574fe5;
-  }
-  
-  .progress {
-    background: #eee;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-top: 20px;
-  }
-  .bar {
-    background: #28a745;
-    height: 8px;
-    transition: width 0.3s ease;
-  }
-  
-  .result {
-    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* More space */
+    margin-top: 30px; /* More space above button */
+    box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3); /* Subtle shadow for button */
+}
+
+.process-button:hover:not(:disabled) {
+    background-color: #524ccf;
+    transform: translateY(-3px); /* Stronger lift effect */
+    box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4);
+}
+
+.process-button:disabled {
+    background-color: #d8dee3; /* Greyed out when disabled */
+    color: #8fa1b4;
+    cursor: not-allowed;
+    opacity: 0.8;
+    box-shadow: none;
+    transform: none;
+}
+
+/* --- Progress Bar --- */
+.processing-status {
+    margin-top: 30px;
     text-align: center;
-  }
-  
-  .download-link {
-    display: inline-block;
-    margin-top: 10px;
-    background: #6c63ff;
-    color: white;
-    padding: 10px 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    background: #eef2f6; /* Lighter background for bar */
     border-radius: 6px;
+    height: 12px; /* Slightly thicker */
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #20c997; /* Teal success green */
+    width: 0%;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.95rem;
+    color: #5f6c7c;
+    font-weight: 500;
+}
+
+/* --- Preview Panel (Right) --- */
+.preview-panel {
+    flex: 1;
+    min-width: 400px;
+    background: #ffffff;
+    padding: 35px; /* Consistent padding */
+    border-radius: 18px; /* Consistent rounding */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    border: 1px solid #e0e6ec;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.panel-title {
+    font-size: 1.5rem; /* Slightly larger */
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 30px; /* More space below title */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.panel-title i {
+    color: #7b8bff; /* Primary accent for icons */
+}
+
+.image-display-area {
+    width: 100%;
+    height: 320px; /* Slightly taller */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8faff; /* Light blueish background for preview */
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    border: 2px dashed #dde4ee; /* Softer dashed border */
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Subtle shadow for images */
+}
+
+.placeholder-text {
+    color: #aab8fa;
+    font-size: 1.15rem;
+    padding: 25px;
+}
+.placeholder-text i {
+    font-size: 4.5rem; /* Larger icon */
+    margin-bottom: 18px;
+    display: block;
+}
+
+/* --- Result Area --- */
+.result-area {
+    margin-top: 35px;
+    width: 100%;
+    padding-top: 30px;
+    border-top: 1px solid #e0e6ec; /* Separator */
+}
+
+.result-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.result-summary p {
+    font-size: 1.15rem;
+    color: #34495e;
+    font-weight: 500;
+}
+
+.highlight-text {
+    color: #20c997; /* Teal success green */
+    font-weight: 700;
+    font-size: 1.3rem; /* More prominent */
+}
+
+.original-size-info {
+    font-size: 0.95rem;
+    color: #8899a6;
+    margin-top: -5px;
+}
+
+.download-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 25px;
+    background: #20c997; /* Teal download button */
+    color: white;
+    padding: 14px 28px; /* More padding */
+    border-radius: 10px; /* More rounded */
     text-decoration: none;
-  }
-  
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(32, 201, 151, 0.3); /* Subtle shadow */
+}
+
+.download-button:hover {
+    background-color: #1aa07d;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(32, 201, 151, 0.4);
+}
+
+.reset-button {
+    background: #9faec2; /* Muted grey for reset */
+    color: white;
+    border: none;
+    padding: 12px 22px; /* More padding */
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.reset-button:hover {
+    background-color: #8798af;
+}
+
+/* --- Error Area --- */
+.error-area {
+    margin-top: 35px;
+    width: 100%;
+    padding-top: 30px;
+    border-top: 1px solid #e0e6ec;
+    text-align: center;
+}
+
+.error-title {
+    color: #dc3545; /* Error red */
+}
+.error-title i {
+    color: #dc3545; /* Ensure icon matches */
+}
+
+.error-message {
+    color: #dc3545;
+    font-weight: 500;
+    font-size: 1.1rem; /* Slightly larger */
+    margin-top: 12px;
+    line-height: 1.5;
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .optimizer-workspace {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px; /* Reduced gap when stacked */
+    }
+
+    .control-panel, .preview-panel {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .control-panel {
+        margin-bottom: 0; /* No extra margin when stacked */
+    }
+}
+
+@media (max-width: 768px) {
+    .image-optimizer-container {
+        padding: 25px;
+        margin: 25px auto;
+    }
+
+    .optimizer-header h1 {
+        font-size: 2.3rem;
+    }
+
+    .optimizer-header .tagline {
+        font-size: 1rem;
+    }
+
+    .control-panel, .preview-panel {
+        padding: 25px;
+    }
+
+    .upload-zone {
+        padding: 35px;
+        min-height: 180px;
+    }
+
+    .upload-icon, .file-uploaded-icon {
+        font-size: 3.5rem;
+    }
+
+    .process-button {
+        padding: 14px 25px;
+        font-size: 1.05rem;
+    }
+
+    .panel-title {
+        font-size: 1.3rem;
+    }
+
+    .image-display-area {
+        height: 280px;
+    }
+
+    .download-button {
+        padding: 12px 22px;
+        font-size: 0.95rem;
+    }
+
+    .reset-button {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .optimizer-header h1 {
+        font-size: 1.9rem;
+    }
+
+    .setting-group-grid {
+        grid-template-columns: 1fr;
+        gap: 15px; /* Slightly smaller gap */
+    }
+
+    .upload-prompt {
+        font-size: 1.1rem;
+    }
+
+    .upload-icon, .file-uploaded-icon {
+        font-size: 3rem;
+    }
+}

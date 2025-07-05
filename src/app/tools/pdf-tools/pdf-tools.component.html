@@ -1,213 +1,291 @@
-<div class="tool-card animate__animated animate__fadeIn">
-  <div class="card-header animate__animated animate__fadeInDown">
-    <h2>📄 PDF Conversion Tools</h2>
-    <p class="sub-heading">Your one-stop solution for PDF and Image conversions</p>
-  </div>
-
-  <div class="card-content">
-    <div class="mode-select animate__animated animate__fadeInUp">
-      <label for="mode">Select Tool:</label>
-      <div class="custom-select-wrapper">
-        <select [(ngModel)]="mode" id="mode">
-          <option value="jpg-to-pdf">🖼️ JPG/PNG to PDF</option>
-          <option value="pdf-to-word">📄 PDF to Word</option>
-          <option value="word-to-pdf">📝 Word to PDF</option>
-          <option value="merge-images-to-pdf">🎴 Merge Images to PDF</option> </select>
-        <span class="custom-select-arrow"></span>
-      </div>
+<div class="main-container">
+    <div class="main-container-bg-elements">
+        <div class="animated-gradient-overlay"></div>
+        <div class="background-particles"></div>
+    </div>
+    <div class="header-section">
+        <h1>🚀 DocuFlow: All-in-One File Transformations</h1>
+        <p>Seamlessly convert, merge, and manage your PDFs, images, and documents with unparalleled ease.</p>
     </div>
 
-    <ng-container [ngSwitch]="mode">
-
-      <ng-container *ngSwitchCase="'jpg-to-pdf'">
-        <label class="upload-box animate__animated animate__fadeInUp"
-               [class.drag-over]="isDragging"
-               (dragover)="onDragOverSingle($event)"
-               (dragleave)="onDragLeaveSingle($event)"
-               (drop)="onDropSingle($event)">
-          <input #fileInputSingle type="file"
-                 [accept]="getFileAcceptTypes(mode)"
-                 (change)="onFileSelectedSingle($event)" hidden />
-          <div class="upload-text" (click)="fileInputSingle.click()">
-            <ng-container *ngIf="!selectedFileSingle">
-              <i class="fas fa-cloud-upload-alt upload-icon animate__animated animate__bounce"></i>
-              <span class="upload-prompt">Click or Drag & Drop your file</span>
-            </ng-container>
-            <ng-container *ngIf="selectedFileSingle">
-              <span class="file-selected animate__animated animate__fadeIn">
-                <i class="fas fa-check-circle success-icon"></i>
-                <span class="file-name">{{ selectedFileSingle.name }}</span>
-              </span>
-            </ng-container>
-          </div>
-        </label>
-        <button class="convert-btn animate__animated"
-                [ngClass]="{'animate__pulse': !progress, 'animate__flash': progress > 0 && progress < 100}"
-                [disabled]="!selectedFileSingle || progress > 0"
-                (click)="uploadSingleFile()">
-          <ng-container *ngIf="progress === 0">
-            <i class="fas fa-rocket launch-icon"></i> Convert
-          </ng-container>
-          <ng-container *ngIf="progress > 0">
-            <i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%
-          </ng-container>
+    <div class="tool-navigation">
+        <button class="nav-button" [class.active]="activeTool === 'jpg-to-pdf'" (click)="setActiveTool('jpg-to-pdf')">
+            <i class="fas fa-image"></i> JPG/PNG to PDF
         </button>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'pdf-to-word'">
-        <label class="upload-box animate__animated animate__fadeInUp"
-               [class.drag-over]="isDragging"
-               (dragover)="onDragOverSingle($event)"
-               (dragleave)="onDragLeaveSingle($event)"
-               (drop)="onDropSingle($event)">
-          <input #fileInputSingle type="file"
-                 [accept]="getFileAcceptTypes(mode)"
-                 (change)="onFileSelectedSingle($event)" hidden />
-          <div class="upload-text" (click)="fileInputSingle.click()">
-            <ng-container *ngIf="!selectedFileSingle">
-              <i class="fas fa-cloud-upload-alt upload-icon animate__animated animate__bounce"></i>
-              <span class="upload-prompt">Click or Drag & Drop your file</span>
-            </ng-container>
-            <ng-container *ngIf="selectedFileSingle">
-              <span class="file-selected animate__animated animate__fadeIn">
-                <i class="fas fa-check-circle success-icon"></i>
-                <span class="file-name">{{ selectedFileSingle.name }}</span>
-              </span>
-            </ng-container>
-          </div>
-        </label>
-        <button class="convert-btn animate__animated"
-                [ngClass]="{'animate__pulse': !progress, 'animate__flash': progress > 0 && progress < 100}"
-                [disabled]="!selectedFileSingle || progress > 0"
-                (click)="uploadSingleFile()">
-          <ng-container *ngIf="progress === 0">
-            <i class="fas fa-rocket launch-icon"></i> Convert
-          </ng-container>
-          <ng-container *ngIf="progress > 0">
-            <i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%
-          </ng-container>
+        <button class="nav-button" [class.active]="activeTool === 'pdf-to-word'" (click)="setActiveTool('pdf-to-word')">
+            <i class="fas fa-file-pdf"></i> PDF to Word
         </button>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'word-to-pdf'">
-        <label class="upload-box animate__animated animate__fadeInUp"
-               [class.drag-over]="isDragging"
-               (dragover)="onDragOverSingle($event)"
-               (dragleave)="onDragLeaveSingle($event)"
-               (drop)="onDropSingle($event)">
-          <input #fileInputSingle type="file"
-                 [accept]="getFileAcceptTypes(mode)"
-                 (change)="onFileSelectedSingle($event)" hidden />
-          <div class="upload-text" (click)="fileInputSingle.click()">
-            <ng-container *ngIf="!selectedFileSingle">
-              <i class="fas fa-cloud-upload-alt upload-icon animate__animated animate__bounce"></i>
-              <span class="upload-prompt">Click or Drag & Drop your file</span>
-            </ng-container>
-            <ng-container *ngIf="selectedFileSingle">
-              <span class="file-selected animate__animated animate__fadeIn">
-                <i class="fas fa-check-circle success-icon"></i>
-                <span class="file-name">{{ selectedFileSingle.name }}</span>
-              </span>
-            </ng-container>
-          </div>
-        </label>
-        <button class="convert-btn animate__animated"
-                [ngClass]="{'animate__pulse': !progress, 'animate__flash': progress > 0 && progress < 100}"
-                [disabled]="!selectedFileSingle || progress > 0"
-                (click)="uploadSingleFile()">
-          <ng-container *ngIf="progress === 0">
-            <i class="fas fa-rocket launch-icon"></i> Convert
-          </ng-container>
-          <ng-container *ngIf="progress > 0">
-            <i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%
-          </ng-container>
+        <button class="nav-button" [class.active]="activeTool === 'word-to-pdf'" (click)="setActiveTool('word-to-pdf')">
+            <i class="fas fa-file-word"></i> Word to PDF
         </button>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'merge-images-to-pdf'">
-        <label class="upload-box animate__animated animate__fadeInUp merge-images-upload-area"
-               [class.has-files]="selectedFilesMultiple.length > 0"
-               (dragover)="preventDefaults($event)"
-               (drop)="onFilesDroppedMultiple($event)">
-          <input #fileInputMultiple type="file" accept="image/*" multiple (change)="onFilesSelectedMultiple($event)" hidden />
-          <div class="upload-prompt" (click)="fileInputMultiple.click()">
-            <ng-container *ngIf="!selectedFilesMultiple.length">
-              <i class="fas fa-cloud-upload-alt upload-icon animate__animated animate__bounce"></i>
-              <p class="upload-text">Click to browse or drag & drop images here</p>
-              <span class="file-types">Supports JPG, PNG, GIF, BMP</span>
-            </ng-container>
-            <ng-container *ngIf="selectedFilesMultiple.length">
-              <div class="selected-files-summary animate__animated animate__fadeIn">
-                <i class="fas fa-check-circle success-icon"></i>
-                <p>{{ selectedFilesMultiple.length }} image(s) selected</p>
-                <button type="button" class="clear-selection-btn animate__animated animate__shakeX"
-                        (click)="$event.stopPropagation(); reset()">Clear Selection</button>
-              </div>
-              <div class="selected-file-list animate__animated animate__fadeInUp">
-                <p>Selected Files:</p>
-                <ul>
-                  <li *ngFor="let file of selectedFilesMultiple" class="animate__animated animate__fadeInLeft list-item-fade">
-                    <i class="fas fa-file-image file-icon"></i> {{ file.name }}
-                  </li>
-                </ul>
-              </div>
-            </ng-container>
-          </div>
-        </label>
-
-        <div class="image-preview-section animate__animated animate__fadeIn" *ngIf="selectedFilesMultiple.length > 0 && previewUrlMultiple">
-          <h3>First Image Preview:</h3>
-          <div class="image-preview-wrapper">
-            <img [src]="previewUrlMultiple" alt="Selected Image Preview" class="preview-img fade-in-img" />
-          </div>
-          <p class="preview-caption">
-            {{ selectedFilesMultiple[0].name }}<br>
-            {{ (selectedFilesMultiple[0].size / 1024).toFixed(1) }} KB
-          </p>
-        </div>
-
-        <div class="usage-limit-info animate__animated animate__fadeIn" *ngIf="selectedFilesMultiple.length > 0">
-          <p *ngIf="!isPremiumUserMerge && freeUsesRemainingMerge > 0">
-            You can merge <span class="highlight-count">{{ freeUsesRemainingMerge }}</span> more set(s) of images today.
-          </p>
-          <p *ngIf="!isPremiumUserMerge && freeUsesRemainingMerge <= 0" class="limit-reached-message">
-            Daily free limit reached! <a href="/pricing">Upgrade to Premium</a> for unlimited merges.
-          </p>
-          <p *ngIf="!isPremiumUserMerge && selectedFilesMultiple.length > freeFileLimitMerge" class="file-count-warning">
-            Free users can merge up to {{ freeFileLimitMerge }} files. Consider upgrading for larger merges.
-          </p>
-        </div>
-
-        <button class="convert-btn animate__animated"
-                [ngClass]="{'animate__pulse': !progress, 'animate__flash': progress > 0 && progress < 100}"
-                [disabled]="!selectedFilesMultiple.length || progress > 0 || (!isPremiumUserMerge && freeUsesRemainingMerge <= 0) || (!isPremiumUserMerge && selectedFilesMultiple.length > freeFileLimitMerge)"
-                (click)="uploadMultipleFiles()">
-          <ng-container *ngIf="progress === 0">
-            <span class="btn-spinner"><i class="fas fa-rocket launch-icon"></i> Merge to PDF</span>
-          </ng-container>
-          <ng-container *ngIf="progress > 0">
-            <span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i> Merging... {{ progress }}%</span>
-          </ng-container>
+        <button class="nav-button" [class.active]="activeTool === 'merge-images-to-pdf'" (click)="setActiveTool('merge-images-to-pdf')">
+            <i class="fas fa-images"></i> Merge Images to PDF
         </button>
-      </ng-container>
+    </div>
 
-      <div class="progress-container animate__animated animate__fadeIn" *ngIf="progress > 0">
-        <div class="progress-bar" [style.width.%]="progress"></div>
-        <p class="progress-text">{{ progress }}% Uploading...</p>
-      </div>
+    <div class="tool-sections-wrapper">
+        <section id="jpg-to-pdf-section" class="tool-section" [class.active]="activeTool === 'jpg-to-pdf'">
+            <h2><i class="fas fa-image"></i> Convert JPG/PNG to PDF</h2>
+            <p class="tool-description">Easily transform your image files into a single, high-quality PDF document.</p>
 
-      <div class="download-section animate__animated animate__zoomIn" *ngIf="downloadUrl">
-        <p class="success-message">✅ Conversion successful! Download started.</p>
-        <a [href]="downloadUrl" download="merged.pdf" class="download-link animate__animated animate__heartBeat"
-           *ngIf="mode === 'merge-images-to-pdf'">⬇ Download PDF</a>
-        <button type="button" class="reset-btn animate__animated animate__fadeIn" (click)="reset()">Start New Conversion</button>
-      </div>
+            <div class="upload-area-container">
+                <label class="upload-box"
+                        [class.drag-over]="isDragging"
+                        (dragover)="onDragOverSingle($event)"
+                        (dragleave)="onDragLeaveSingle($event)"
+                        (drop)="onDropSingle($event)">
+                    <input #fileInputSingle type="file"
+                            [accept]="getFileAcceptTypes('jpg-to-pdf')"
+                            (change)="onFileSelectedSingle($event)" hidden />
+                    <div class="upload-content" (click)="fileInputSingle.click()">
+                        <ng-container *ngIf="!selectedFileSingle">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <span class="upload-prompt-text">Click to browse or Drag & Drop your image here</span>
+                            <span class="supported-formats">JPG, PNG, GIF, BMP</span>
+                        </ng-container>
+                        <ng-container *ngIf="selectedFileSingle">
+                            <i class="fas fa-check-circle success-icon-file"></i>
+                            <span class="file-name-display">{{ selectedFileSingle.name }}</span>
+                            <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }} KB)</span>
+                            <button type="button" class="clear-file-btn" (click)="$event.stopPropagation(); resetSingleFile()">Clear File</button>
+                        </ng-container>
+                    </div>
+                </label>
 
-      <div class="error-section animate__animated animate__shakeX" *ngIf="errorMessage">
-        <p class="error-message">❌ Error: {{ errorMessage }}</p>
-        <button type="button" class="reset-btn animate__animated animate__fadeIn" (click)="reset()">Try Again</button>
-      </div>
+                <button class="convert-action-btn"
+                        [disabled]="!selectedFileSingle || progress > 0"
+                        (click)="uploadSingleFile()">
+                    <ng-container *ngIf="progress === 0">
+                        <i class="fas fa-magic"></i> Convert to PDF
+                    </ng-container>
+                    <ng-container *ngIf="progress > 0">
+                        <i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%
+                    </ng-container>
+                </button>
 
-    </ng-container>
-  </div>
+                <div class="progress-indicator" *ngIf="progress > 0 && progress < 100">
+                    <div class="progress-bar-fill" [style.width.%]="progress"></div>
+                </div>
+                <span class="progress-percentage" *ngIf="progress > 0 && progress < 100">{{ progress }}%</span>
+
+
+                <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
+                    <p>✅ Conversion successful! Your PDF is ready.</p>
+                    <a [href]="downloadUrl" download="converted.pdf" class="download-btn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Start New</button>
+                </div>
+
+                <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
+                    <p>❌ Error: {{ errorMessage }}</p>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pdf-to-word-section" class="tool-section" [class.active]="activeTool === 'pdf-to-word'">
+            <h2><i class="fas fa-file-pdf"></i> Convert PDF to Word</h2>
+            <p class="tool-description">Transform your PDF documents into editable Word files with ease.</p>
+
+            <div class="upload-area-container">
+                <label class="upload-box"
+                        [class.drag-over]="isDragging"
+                        (dragover)="onDragOverSingle($event)"
+                        (dragleave)="onDragLeaveSingle($event)"
+                        (drop)="onDropSingle($event)">
+                    <input #fileInputSingle type="file"
+                            [accept]="getFileAcceptTypes('pdf-to-word')"
+                            (change)="onFileSelectedSingle($event)" hidden />
+                    <div class="upload-content" (click)="fileInputSingle.click()">
+                        <ng-container *ngIf="!selectedFileSingle">
+                            <i class="fas fa-file-pdf upload-icon"></i> <span class="upload-prompt-text">Click to browse or Drag & Drop your PDF here</span>
+                            <span class="supported-formats">Only PDF (.pdf) files are supported</span>
+                        </ng-container>
+                        <ng-container *ngIf="selectedFileSingle">
+                            <i class="fas fa-check-circle success-icon-file"></i>
+                            <span class="file-name-display">{{ selectedFileSingle.name }}</span>
+                            <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }} KB)</span>
+                            <button type="button" class="clear-file-btn" (click)="$event.stopPropagation(); resetSingleFile()">Clear File</button>
+                        </ng-container>
+                    </div>
+                </label>
+
+                <button class="convert-action-btn"
+                        [disabled]="!selectedFileSingle || progress > 0"
+                        (click)="uploadSingleFile()">
+                    <ng-container *ngIf="progress === 0">
+                        <i class="fas fa-file-word"></i> Convert to Word
+                    </ng-container>
+                    <ng-container *ngIf="progress > 0">
+                        <i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%
+                    </ng-container>
+                </button>
+
+                <div class="progress-indicator" *ngIf="progress > 0 && progress < 100">
+                    <div class="progress-bar-fill" [style.width.%]="progress"></div>
+                </div>
+                <span class="progress-percentage" *ngIf="progress > 0 && progress < 100">{{ progress }}%</span>
+
+                <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
+                    <p>✅ Conversion successful! Your Word file is ready.</p>
+                    <a [href]="downloadUrl" download="converted.docx" class="download-btn">
+                        <i class="fas fa-download"></i> Download Word
+                    </a>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Start New</button>
+                </div>
+
+                <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
+                    <p>❌ Error: {{ errorMessage }}</p>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="word-to-pdf-section" class="tool-section" [class.active]="activeTool === 'word-to-pdf'">
+            <h2><i class="fas fa-file-word"></i> Convert Word to PDF</h2>
+            <p class="tool-description">Convert your Word documents into high-quality, universally compatible PDF files.</p>
+
+            <div class="upload-area-container">
+                <label class="upload-box"
+                        [class.drag-over]="isDragging"
+                        (dragover)="onDragOverSingle($event)"
+                        (dragleave)="onDragLeaveSingle($event)"
+                        (drop)="onDropSingle($event)">
+                    <input #fileInputSingle type="file"
+                            [accept]="getFileAcceptTypes('word-to-pdf')"
+                            (change)="onFileSelectedSingle($event)" hidden />
+                    <div class="upload-content" (click)="fileInputSingle.click()">
+                        <ng-container *ngIf="!selectedFileSingle">
+                            <i class="fas fa-file-word upload-icon"></i> <span class="upload-prompt-text">Click to browse or Drag & Drop your Word file here</span>
+                            <span class="supported-formats">Only DOC, DOCX files are supported</span>
+                        </ng-container>
+                        <ng-container *ngIf="selectedFileSingle">
+                            <i class="fas fa-check-circle success-icon-file"></i>
+                            <span class="file-name-display">{{ selectedFileSingle.name }}</span>
+                            <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }} KB)</span>
+                            <button type="button" class="clear-file-btn" (click)="$event.stopPropagation(); resetSingleFile()">Clear File</button>
+                        </ng-container>
+                    </div>
+                </label>
+
+                <button class="convert-action-btn"
+                        [disabled]="!selectedFileSingle || progress > 0"
+                        (click)="uploadSingleFile()">
+                    <ng-container *ngIf="progress === 0">
+                        <i class="fas fa-file-pdf"></i> Convert to PDF
+                    </ng-container>
+                    <ng-container *ngIf="progress > 0">
+                        <i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%
+                    </ng-container>
+                </button>
+
+                <div class="progress-indicator" *ngIf="progress > 0 && progress < 100">
+                    <div class="progress-bar-fill" [style.width.%]="progress"></div>
+                </div>
+                <span class="progress-percentage" *ngIf="progress > 0 && progress < 100">{{ progress }}%</span>
+
+
+                <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
+                    <p>✅ Conversion successful! Your PDF is ready.</p>
+                    <a [href]="downloadUrl" download="converted.pdf" class="download-btn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Start New</button>
+                </div>
+
+                <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
+                    <p>❌ Error: {{ errorMessage }}</p>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="merge-images-to-pdf-section" class="tool-section" [class.active]="activeTool === 'merge-images-to-pdf'">
+            <h2><i class="fas fa-images"></i> Merge Images to PDF</h2>
+            <p class="tool-description">Combine multiple images into a single, organized PDF document.</p>
+
+            <div class="upload-area-container">
+                <label class="upload-box multi-image-upload"
+                        [class.drag-over]="isDragging"
+                        [class.has-files]="selectedFilesMultiple.length > 0"
+                        (dragover)="preventDefaults($event)"
+                        (dragleave)="onDragLeaveMultiple($event)"
+                        (drop)="onFilesDroppedMultiple($event)">
+                    <input #fileInputMultiple type="file" accept="image/*" multiple (change)="onFilesSelectedMultiple($event)" hidden />
+                    <div class="upload-content" (click)="fileInputMultiple.click()">
+                        <ng-container *ngIf="!selectedFilesMultiple.length">
+                            <i class="fas fa-images upload-icon"></i> <span class="upload-prompt-text">Click to browse or Drag & Drop images here</span>
+                            <span class="supported-formats">Supports JPG, PNG, GIF, BMP</span>
+                        </ng-container>
+                        <ng-container *ngIf="selectedFilesMultiple.length">
+                            <div class="selected-files-summary-display">
+                                <i class="fas fa-check-circle success-icon-file"></i>
+                                <p>{{ selectedFilesMultiple.length }} image(s) selected</p>
+                                <button type="button" class="clear-file-btn"
+                                        (click)="$event.stopPropagation(); resetMultipleFiles()">Clear Selection</button>
+                            </div>
+                            <div class="selected-file-list-preview" *ngIf="selectedFilesMultiple.length > 0">
+                                <p class="list-heading">Selected Files:</p>
+                                <ul>
+                                    <li *ngFor="let file of selectedFilesMultiple" class="list-item-fade">
+                                        <i class="fas fa-file-image file-icon"></i> {{ file.name }} ({{ (file.size / 1024).toFixed(1) }} KB)
+                                    </li>
+                                </ul>
+                            </div>
+                        </ng-container>
+                    </div>
+                </label>
+
+                <div class="image-preview-section-container" *ngIf="selectedFilesMultiple.length > 0 && previewUrlMultiple">
+                    <h3>First Image Preview:</h3>
+                    <div class="image-preview-wrapper-new">
+                        <img [src]="previewUrlMultiple" alt="Selected Image Preview" class="preview-img-new" />
+                    </div>
+                </div>
+
+                <div class="usage-limit-info-new" *ngIf="selectedFilesMultiple.length > 0">
+                    <p *ngIf="!isPremiumUserMerge && freeUsesRemainingMerge > 0">
+                        You can merge <span class="highlight-count">{{ freeUsesRemainingMerge }}</span> more set(s) of images today.
+                    </p>
+                    <p *ngIf="!isPremiumUserMerge && freeUsesRemainingMerge <= 0" class="limit-reached-message">
+                        Daily free limit reached! <a href="/pricing">Upgrade to Premium</a> for unlimited merges.
+                    </p>
+                    <p *ngIf="!isPremiumUserMerge && selectedFilesMultiple.length > freeFileLimitMerge" class="file-count-warning">
+                        Free users can merge up to {{ freeFileLimitMerge }} files. Consider upgrading for larger merges.
+                    </p>
+                </div>
+
+                <button class="convert-action-btn"
+                        [disabled]="!selectedFilesMultiple.length || progress > 0 || (!isPremiumUserMerge && freeUsesRemainingMerge <= 0) || (!isPremiumUserMerge && selectedFilesMultiple.length > freeFileLimitMerge)"
+                        (click)="uploadMultipleFiles()">
+                    <ng-container *ngIf="progress === 0">
+                        <i class="fas fa-images"></i> Merge to PDF
+                    </ng-container>
+                    <ng-container *ngIf="progress > 0">
+                        <i class="fas fa-spinner fa-spin"></i> Merging... {{ progress }}%
+                    </ng-container>
+                </button>
+
+                <div class="progress-indicator" *ngIf="progress > 0 && progress < 100">
+                    <div class="progress-bar-fill" [style.width.%]="progress"></div>
+                </div>
+                <span class="progress-percentage" *ngIf="progress > 0 && progress < 100">{{ progress }}%</span>
+
+
+                <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
+                    <p>✅ Merge successful! Your PDF is ready.</p>
+                    <a [href]="downloadUrl" download="merged_images.pdf" class="download-btn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                    <button type="button" class="reset-conversion-btn" (click)="resetMultipleFiles()">Start New</button>
+                </div>
+
+                <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
+                    <p>❌ Error: {{ errorMessage }}</p>
+                    <button type="button" class="reset-conversion-btn" (click)="resetMultipleFiles()">Try Again</button>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>

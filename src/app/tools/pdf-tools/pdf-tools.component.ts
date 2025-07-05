@@ -11,39 +11,43 @@ import { environment } from 'src/environments/environment';
 })
 
 export class PdfToolsComponent implements OnInit, OnDestroy {
-  // Common properties for both functionalities
-  mode: string = 'jpg-to-pdf'; // Default mode
+  // --- Common Properties ---
+  // `activeTool` will control which section is displayed in the HTML.
+  // Initialize to the default view you want to show first.
+  activeTool: string = 'jpg-to-pdf'; // This replaces your old 'mode' for UI switching.
+
   progress = 0;
   downloadUrl: string = '';
   errorMessage = '';
   private uploadSubscription: Subscription | null = null;
 
-  // Properties for Single File Conversions (JPG/PNG to PDF, PDF to Word, Word to PDF)
+  // --- Properties for Single File Conversions (JPG/PNG to PDF, PDF to Word, Word to PDF) ---
   selectedFileSingle: File | null = null;
-  isDragging: boolean = false; // For single file drag-over effect
-
+  isDragging: boolean = false; // For drag-over effect, used by both single and multiple
   @ViewChild('fileInputSingle') fileInputSingle!: ElementRef<HTMLInputElement>;
 
-  // Properties for Merge Images to PDF
+  // --- Properties for Merge Images to PDF ---
   selectedFilesMultiple: File[] = [];
-  previewUrlMultiple: string = ''; // Preview for the first image
+  previewUrlMultiple: string = ''; // Preview for the first image of multiple files
+  @ViewChild('fileInputMultiple') fileInputMultiple!: ElementRef<HTMLInputElement>;
+
   // Usage Control for Merge Images to PDF (as provided in your code)
   isPremiumUserMerge: boolean = false; // Can be true if user logs in as premium
   freeUsesLimitMerge: number = 999999; // Set to a very high number for effectively unlimited daily merges
-  freeUsesRemainingMerge: number = this.freeUsesLimitMerge;
+  freeUsesRemainingMerge: number = this.freeUsesLimitMerge; // Will always be high
   freeFileLimitMerge: number = 20; // Max files for free users per merge
-
-  @ViewChild('fileInputMultiple') fileInputMultiple!: ElementRef<HTMLInputElement>;
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // Initialize usage limits for merge images tool
-    // We can still call checkUserStatus if you intend to use `isPremiumUserMerge` for other features
+    // Initialize usage limits for merge images tool.
+    // If you plan to load user status from an API, call it here.
     this.checkUserStatusMerge();
-    // No need to load daily usage from localStorage if there's effectively no daily limit
-    this.freeUsesRemainingMerge = this.freeUsesLimitMerge; // Ensure it's always set to the high limit on init
+
+    // The 'mode' property from the URL is no longer directly used for UI switching
+    // but could be used to pre-select a tool if you wanted deep linking.
+    // For now, `activeTool` manages the visible section.
   }
 
   ngOnDestroy(): void {
@@ -53,23 +57,30 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // --- UI Switching Method (Call from your navigation buttons in HTML) ---
+  setActiveTool(toolName: string): void {
+    this.activeTool = toolName;
+    this.reset(); // Reset states when switching tools for a clean slate
+  }
+
   // --- Helper for file input accept attribute ---
   getFileAcceptTypes(mode: string): string {
     switch (mode) {
       case 'jpg-to-pdf':
-        return 'image/*'; // Accepts all image types
+        return 'image/jpeg,image/png,image/gif,image/bmp'; // Specific image MIME types
       case 'pdf-to-word':
-        return '.pdf';
+        return 'application/pdf';
       case 'word-to-pdf':
-        return '.docx'; // Accepts only .docx files
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword'; // .docx and .doc
       case 'merge-images-to-pdf':
-        return 'image/*'; // Accepts all image types for merge
+        return 'image/jpeg,image/png,image/gif,image/bmp'; // Specific image MIME types for merge
       default:
         return '*/*'; // Fallback
     }
   }
 
-  // --- Common Reset Logic ---
+  // --- Global Reset Logic ---
+  // This resets EVERYTHING, ideal when switching tools or starting fresh after success/error.
   reset(): void {
     if (this.uploadSubscription) {
       this.uploadSubscription.unsubscribe();
@@ -78,15 +89,14 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
 
     // Reset single file properties
     this.selectedFileSingle = null;
-    this.isDragging = false;
-    if (this.fileInputSingle) {
+    if (this.fileInputSingle && this.fileInputSingle.nativeElement) {
       this.fileInputSingle.nativeElement.value = ''; // Clear single file input
     }
 
     // Reset multiple files properties
     this.selectedFilesMultiple = [];
     this.previewUrlMultiple = '';
-    if (this.fileInputMultiple) {
+    if (this.fileInputMultiple && this.fileInputMultiple.nativeElement) {
       this.fileInputMultiple.nativeElement.value = ''; // Clear multiple file input
     }
 
@@ -94,17 +104,73 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     this.progress = 0;
     this.downloadUrl = '';
     this.errorMessage = '';
+    this.isDragging = false; // Always reset dragging state
     this.freeUsesRemainingMerge = this.freeUsesLimitMerge; // Reset merge usage to high limit
+  }
+
+  // --- Reset specific to single file input, used when clearing only that input ---
+  resetSingleFile(): void {
+    this.selectedFileSingle = null;
+    this.progress = 0;
+    this.downloadUrl = '';
+    this.errorMessage = '';
+    this.isDragging = false;
+    if (this.fileInputSingle) {
+      this.fileInputSingle.nativeElement.value = '';
+    }
+  }
+
+  // --- Reset specific to multiple files input, used when clearing only that input ---
+  resetMultipleFiles(): void {
+    this.selectedFilesMultiple = [];
+    this.previewUrlMultiple = '';
+    this.progress = 0;
+    this.downloadUrl = '';
+    this.errorMessage = '';
+    this.isDragging = false;
+    if (this.fileInputMultiple) {
+      this.fileInputMultiple.nativeElement.value = '';
+    }
+  }
+
+
+  // --- Common State Reset for New Upload Initiation ---
+  // This is called before any new upload starts to clear previous results/errors.
+  private resetCommonStatesForNewUpload(): void {
+    this.progress = 0;
+    this.downloadUrl = '';
+    this.errorMessage = '';
+    this.isDragging = false; // Ensure dragging state is reset
+    // Important: Do NOT clear the file inputs or selectedFile/Multiple here.
+    // They should remain selected until a new file is chosen or a manual reset.
   }
 
   // --- Single File Conversion Methods ---
 
   onFileSelectedSingle(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.selectedFileSingle = input.files?.[0] || null;
-    this.resetCommonStatesForNewUpload(); // Reset states common to all uploads
-    this.selectedFilesMultiple = []; // Ensure multiple is cleared
-    this.previewUrlMultiple = ''; // Ensure multiple preview is cleared
+    const file = input.files?.[0] || null;
+
+    if (file) {
+      const acceptedTypes = this.getFileAcceptTypes(this.activeTool); // Use activeTool here
+      const isFileTypeAccepted = this.checkFileType(file, acceptedTypes);
+
+      if (isFileTypeAccepted) {
+        this.selectedFileSingle = file;
+        this.resetCommonStatesForNewUpload(); // Reset states common to all uploads
+        this.selectedFilesMultiple = []; // Ensure multiple is cleared when a single file is selected
+        this.previewUrlMultiple = ''; // Ensure multiple preview is cleared
+      } else {
+        this.errorMessage = `Unsupported file type for this conversion. Please select a valid file (e.g., ${acceptedTypes}).`;
+        this.selectedFileSingle = null; // Clear invalid selection
+        if (this.fileInputSingle) {
+          this.fileInputSingle.nativeElement.value = ''; // Clear input visually
+        }
+      }
+    } else {
+      this.selectedFileSingle = null;
+      this.resetCommonStatesForNewUpload();
+    }
   }
 
   onDragOverSingle(event: DragEvent): void {
@@ -114,19 +180,19 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
   }
 
   onDragLeaveSingle(event: DragEvent): void {
-    event.stopPropagation();
+    event.stopPropagation(); // Only stop propagation, don't preventDefault here
     this.isDragging = false;
   }
 
   onDropSingle(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging = false;
+    this.isDragging = false; // Reset dragging state
 
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files[0];
-      const acceptedTypes = this.getFileAcceptTypes(this.mode);
+      const acceptedTypes = this.getFileAcceptTypes(this.activeTool); // Use activeTool here
       const isFileTypeAccepted = this.checkFileType(file, acceptedTypes);
 
       if (isFileTypeAccepted) {
@@ -135,9 +201,15 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
         this.selectedFilesMultiple = []; // Ensure multiple is cleared
         this.previewUrlMultiple = ''; // Ensure multiple preview is cleared
       } else {
-        this.errorMessage = `Unsupported file type for ${this.mode} mode. Please select a valid file.`;
-        this.reset();
+        this.errorMessage = `Unsupported file type for this conversion. Please select a valid file (e.g., ${acceptedTypes}).`;
+        this.selectedFileSingle = null; // Clear invalid selection
+        if (this.fileInputSingle) {
+          this.fileInputSingle.nativeElement.value = ''; // Clear input visually
+        }
       }
+    } else {
+      this.selectedFileSingle = null;
+      this.resetCommonStatesForNewUpload();
     }
   }
 
@@ -157,7 +229,7 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     let mimeType = '';
     let fileName = '';
 
-    switch (this.mode) {
+    switch (this.activeTool) { // Use activeTool here
       case 'jpg-to-pdf':
         apiUrl = `${environment.apiUrl}/jpg-to-pdf`;
         mimeType = 'application/pdf';
@@ -174,7 +246,7 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
         fileName = 'converted.pdf';
         break;
       default:
-        this.errorMessage = 'Invalid conversion mode selected.';
+        this.errorMessage = 'Invalid conversion tool selected.';
         this.reset();
         return;
     }
@@ -195,8 +267,8 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
           const blob = new Blob([event.body!], { type: mimeType });
           const url = URL.createObjectURL(blob);
           this.downloadUrl = url; // Set download URL for success message
-          // No need to set downloadTriggered for auto-download, but it can be used for UI visibility
 
+          // Trigger download automatically
           setTimeout(() => {
             const anchor = document.createElement('a');
             anchor.href = url;
@@ -205,13 +277,13 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
             anchor.click();
             document.body.removeChild(anchor);
             URL.revokeObjectURL(url);
-            this.reset(); // Auto-clear after download
-          }, 500);
+            this.resetSingleFile(); // Reset specific to single file after download
+          }, 500); // Small delay to ensure UI updates
         }
       },
       error: (error: HttpErrorResponse) => {
         this.handleUploadError(error);
-        this.reset();
+        this.resetCommonStatesForNewUpload(); // Reset common states on error
       },
       complete: () => {
         this.unsubscribeUpload();
@@ -219,12 +291,13 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // --- Merge Images to PDF Methods ---
+  // --- Merge Images to PDF Methods (Multiple Files) ---
 
   onFilesSelectedMultiple(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      this.selectedFilesMultiple = Array.from(input.files).filter(file => file.type.startsWith('image/'));
+      const filesArray = Array.from(input.files).filter(file => file.type.startsWith('image/'));
+      this.selectedFilesMultiple = filesArray;
       this.resetCommonStatesForNewUpload(); // Reset common states
       this.selectedFileSingle = null; // Ensure single file is cleared
 
@@ -239,20 +312,25 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
         this.previewUrlMultiple = '';
       }
 
-      // Check file count limit for free users
-      if (!this.isPremiumUserMerge && this.selectedFilesMultiple.length > this.freeFileLimitMerge) {
-        this.errorMessage = `Free users can merge up to ${this.freeFileLimitMerge} images at once.`;
-      } else {
-        this.errorMessage = '';
-      }
+      this.checkMergeLimits(); // Check and update error message based on limits
     }
   }
 
+  // This handles dragover for multiple files. `preventDefaults` is called from HTML.
+  // We keep `isDragging` true during dragover.
+  onDragLeaveMultiple(event: DragEvent): void {
+    event.stopPropagation();
+    this.isDragging = false;
+  }
+
   onFilesDroppedMultiple(event: DragEvent): void {
-    this.preventDefaults(event);
+    this.preventDefaults(event); // Already calls preventDefault & stopPropagation & sets isDragging=true
+    this.isDragging = false; // Reset dragging state
+
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
-      this.selectedFilesMultiple = Array.from(files).filter(file => file.type.startsWith('image/'));
+      const filesArray = Array.from(files).filter(file => file.type.startsWith('image/'));
+      this.selectedFilesMultiple = filesArray;
       this.resetCommonStatesForNewUpload();
       this.selectedFileSingle = null; // Ensure single file is cleared
 
@@ -267,31 +345,42 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
         this.previewUrlMultiple = '';
       }
 
-      // Check file count limit for free users
-      if (!this.isPremiumUserMerge && this.selectedFilesMultiple.length > this.freeFileLimitMerge) {
-        this.errorMessage = `Free users can merge up to ${this.freeFileLimitMerge} images at once.`;
-      } else {
-        this.errorMessage = '';
-      }
+      this.checkMergeLimits(); // Check and update error message based on limits
     }
   }
 
+  // Combined preventDefaults for dragover/drop zones
   preventDefaults(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
+    // Only set isDragging to true on dragover, not drop
+    if (event.type === 'dragover') {
+      this.isDragging = true;
+    }
   }
 
   checkUserStatusMerge(): void {
-    // This is where you'd typically check user's premium status from an auth service
-    // For now, it's hardcoded to false as per your original request to essentially remove daily limits for free users.
+    // Implement your actual user premium status check here
+    // For now, hardcoded to false as per your setup for "effectively unlimited free merges"
     this.isPremiumUserMerge = false;
   }
 
+  // A dedicated method to check and set merge related error messages
+  private checkMergeLimits(): void {
+    this.errorMessage = ''; // Clear previous error
+    if (!this.isPremiumUserMerge) {
+      if (this.selectedFilesMultiple.length > this.freeFileLimitMerge) {
+        this.errorMessage = `Free users can merge up to ${this.freeFileLimitMerge} images at once.`;
+      }
+      // No check for freeUsesRemainingMerge here as it's effectively unlimited with 999999
+    }
+  }
+
+  // This method will decrement from a very large number, so it won't affect free users significantly
   incrementDailyUsageMerge(): void {
-    // This method will still decrement `freeUsesRemainingMerge` but from a very large number,
-    // so it will effectively never hit zero for free users.
     if (!this.isPremiumUserMerge) {
       this.freeUsesRemainingMerge--;
+      // This decrement is mostly for theoretical tracking if you ever revert limits
     }
   }
 
@@ -301,13 +390,15 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.isPremiumUserMerge && this.freeUsesRemainingMerge <= 0) {
-      this.errorMessage = 'Daily free merge limit reached! Please upgrade to Premium for unlimited use.';
+    // Re-check limits right before upload to ensure no last-second changes
+    this.checkMergeLimits();
+    if (this.errorMessage) { // If checkMergeLimits set an error, stop
       return;
     }
 
-    if (!this.isPremiumUserMerge && this.selectedFilesMultiple.length > this.freeFileLimitMerge) {
-      this.errorMessage = `Free users can merge up to ${this.freeFileLimitMerge} images at once.`;
+    // Additional check for freeUsesRemainingMerge, although it's very high
+    if (!this.isPremiumUserMerge && this.freeUsesRemainingMerge <= 0) {
+      this.errorMessage = 'Daily free merge limit reached! Please upgrade to Premium for unlimited use.';
       return;
     }
 
@@ -315,7 +406,7 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     this.progress = 1; // Start progress bar immediately
 
     const formData = new FormData();
-    this.selectedFilesMultiple.forEach(file => formData.append('files', file)); // Note: 'files' is the backend expected field name
+    this.selectedFilesMultiple.forEach(file => formData.append('files', file)); // 'files' is the backend expected field name
 
     this.uploadSubscription = this.http.post(`${environment.apiUrl}/merge-images-to-pdf`, formData, {
       responseType: 'blob',
@@ -335,26 +426,30 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
             const url = URL.createObjectURL(blob);
             this.downloadUrl = url; // Set download URL for success message
 
-            // Programmatically trigger download (optional, but good for multi-file tools)
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'merged_images.pdf'; // Specific name for merged PDF
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            // Programmatically trigger download
+            setTimeout(() => {
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'merged_images.pdf'; // Specific name for merged PDF
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              // Do NOT reset the component fully here. Let the user see the download link
+              // and manually click "Start New Conversion".
+              // The `downloadUrl` being set ensures the download section appears.
+            }, 500);
 
             this.incrementDailyUsageMerge(); // Increment usage upon successful merge
-            // DO NOT reset immediately here. Let the user see the download link and click "Merge Another".
-            // The download URL is set, which shows the download section.
           } else {
             this.errorMessage = 'PDF creation failed: Empty response from server.';
-            this.progress = 0;
+            this.progress = 0; // Reset progress on empty response error
           }
         }
       },
       error: (error: HttpErrorResponse) => {
         this.handleUploadError(error);
+        this.resetCommonStatesForNewUpload(); // Reset common states on error
       },
       complete: () => {
         this.unsubscribeUpload();
@@ -363,46 +458,41 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
   }
 
   // --- Utility methods ---
-  private resetCommonStatesForNewUpload(): void {
-    this.progress = 0;
-    this.downloadUrl = '';
-    this.errorMessage = '';
-    // Ensure both file inputs are cleared visually if new files are selected in either mode
-    if (this.fileInputSingle && this.fileInputSingle.nativeElement.value) {
-      this.fileInputSingle.nativeElement.value = '';
-    }
-    if (this.fileInputMultiple && this.fileInputMultiple.nativeElement.value) {
-        this.fileInputMultiple.nativeElement.value = '';
-    }
-  }
-
   private handleUploadError(error: HttpErrorResponse): void {
     console.error('Upload error:', error);
-    this.progress = 0;
+    this.progress = 0; // Reset progress on error
+    this.downloadUrl = ''; // Clear any download URL on error
+
     if (error.error instanceof ErrorEvent) {
+      // Client-side error or network error
       this.errorMessage = `An error occurred: ${error.error.message}`;
     } else {
+      // Backend error
       if (error.error instanceof Blob && error.error.type === 'application/json') {
+        // Try to parse the error message from a JSON blob
         const reader = new FileReader();
         reader.onload = () => {
           try {
             const errorBody = JSON.parse(reader.result as string);
-            this.errorMessage = errorBody.detail || `Server responded with ${error.status}: ${error.statusText || 'Unknown error'}.`;
+            this.errorMessage = errorBody.detail || errorBody.message || `Server responded with ${error.status}: ${error.statusText || 'Unknown error'}.`;
           } catch (e) {
             this.errorMessage = `Server responded with ${error.status}: ${error.statusText || 'Unknown error'}.`;
           }
         };
         reader.readAsText(error.error);
       } else {
+        // Handle non-JSON or other error formats
         this.errorMessage = `Server responded with ${error.status}: ${error.statusText || 'Unknown error'}.`;
       }
 
+      // Specific error status messages
       if (error.status === 0) {
-        this.errorMessage = 'Could not connect to the server. Please ensure the backend is running.';
+        this.errorMessage = 'Could not connect to the server. Please ensure the backend is running and accessible.';
       }
       if (error.status === 403) {
         this.errorMessage = this.errorMessage || 'You have reached your daily limit or exceeded file count for the free plan.';
       }
+      // Add more specific status code handling here as needed (e.g., 400, 404, 500)
     }
   }
 
@@ -413,17 +503,35 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Helper for more robust file type checking (can be expanded)
+  // Helper for more robust file type checking by MIME or extension
   private checkFileType(file: File, acceptedTypes: string): boolean {
-      if (acceptedTypes === '*/*') return true;
-      if (acceptedTypes.includes(file.type)) return true; // Direct MIME type match
+    const mimeTypes = acceptedTypes.split(',').map(type => type.trim().toLowerCase());
+    const fileNameLower = file.name.toLowerCase();
 
-      // Check by extension for common types where MIME might be tricky
-      const fileNameLower = file.name.toLowerCase();
-      if (acceptedTypes === '.pdf' && fileNameLower.endsWith('.pdf')) return true;
-      if (acceptedTypes === '.docx' && fileNameLower.endsWith('.docx')) return true;
-      if (acceptedTypes === 'image/*' && (fileNameLower.endsWith('.jpg') || fileNameLower.endsWith('.jpeg') || fileNameLower.endsWith('.png') || fileNameLower.endsWith('.gif') || fileNameLower.endsWith('.bmp'))) return true;
+    // Check direct MIME type match
+    if (mimeTypes.includes(file.type.toLowerCase())) {
+      return true;
+    }
 
-      return false;
+    // Check for broad image type if 'image/*' is accepted
+    if (mimeTypes.includes('image/*') && file.type.startsWith('image/')) {
+      return true;
+    }
+
+    // Check by common file extensions if MIME types don't fully cover
+    if (mimeTypes.includes('application/pdf') && fileNameLower.endsWith('.pdf')) return true;
+    if (mimeTypes.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document') && fileNameLower.endsWith('.docx')) return true;
+    if (mimeTypes.includes('application/msword') && fileNameLower.endsWith('.doc')) return true;
+
+    // Specific image extension checks if 'image/*' isn't used or for more rigor
+    if (mimeTypes.includes('image/jpeg') && (fileNameLower.endsWith('.jpeg') || fileNameLower.endsWith('.jpg'))) return true;
+    if (mimeTypes.includes('image/png') && fileNameLower.endsWith('.png')) return true;
+    if (mimeTypes.includes('image/gif') && fileNameLower.endsWith('.gif')) return true;
+    if (mimeTypes.includes('image/bmp') && fileNameLower.endsWith('.bmp')) return true;
+
+    // If '*/*' is accepted, then all files are technically accepted
+    if (mimeTypes.includes('*/*')) return true;
+
+    return false;
   }
 }

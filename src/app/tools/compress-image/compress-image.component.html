@@ -1,111 +1,137 @@
-<div class="tool-container">
-    <!-- Header -->
-    <div class="main-header animate__animated animate__fadeInDown">
-      <h1><i class="fas fa-image"></i> Image Optimizer</h1>
-      <p class="tagline">Compress, Resize, Convert or Crop your image effortlessly</p>
+<div class="image-optimizer-container">
+    <div class="optimizer-header animate__animated animate__fadeInDown">
+        <h1><i class="fas fa-magic"></i> Image AI Optimizer</h1>
+        <p class="tagline">Smartly compress, resize, convert, or crop your images with AI precision.</p>
     </div>
-  
-    <!-- Main Workspace -->
-    <div class="workspace">
-      <!-- Tool Left Card -->
-      <div class="tool-card animate__animated animate__fadeInUp"
-           (dragover)="preventDefaults($event)"
-           (drop)="onFilesDropped($event)">
-  
-        <!-- Mode Selector -->
-        <div class="form-group">
-          <label for="modeSelect">🛠 Mode</label>
-          <select id="modeSelect" [(ngModel)]="mode" class="form-select">
-            <option value="compress">⚡ Compress</option>
-            <option value="resize">📐 Resize</option>
-            <option value="convert">🔄 Convert</option>
-            <option value="crop">✂️ Crop</option>
-          </select>
+
+    <div class="optimizer-workspace">
+
+        <div class="control-panel animate__animated animate__fadeInLeft">
+
+            <div class="setting-group">
+                <label for="modeSelect" class="setting-label"><i class="fas fa-tools"></i> Choose Mode</label>
+                <select id="modeSelect" [(ngModel)]="mode" class="app-select">
+                    <option value="compress">⚡ Compress Image</option>
+                    <option value="resize">📐 Resize Image</option>
+                    <option value="convert">🔄 Convert Format</option>
+                    <option value="crop">✂️ Crop Image</option>
+                </select>
+            </div>
+
+            <div class="upload-zone"
+                 (click)="triggerFileInput()"
+                 (dragover)="preventDefaults($event)"
+                 (drop)="onFilesDropped($event)">
+                <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+                <div class="upload-content">
+                    <ng-container *ngIf="!selectedFile">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <span class="upload-prompt">Drag & Drop or Click to Upload Image</span>
+                        <span class="upload-hint">JPG, PNG, WebP, GIF, BMP supported</span>
+                    </ng-container>
+                    <ng-container *ngIf="selectedFile">
+                        <i class="fas fa-check-circle file-uploaded-icon"></i>
+                        <span class="file-name-display">{{ selectedFile.name }}</span>
+                        <span class="file-size-display">({{ (originalSize / 1024).toFixed(1) }} KB)</span>
+                        <button type="button" class="clear-file-btn" (click)="$event.stopPropagation(); clearSelectedFile()">Clear</button>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="dynamic-settings">
+                <div *ngIf="mode === 'resize'" class="setting-group-grid">
+                    <div class="input-field">
+                        <label>Width (px)</label>
+                        <input type="number" [(ngModel)]="resizeWidth" class="app-input" placeholder="e.g. 1280" />
+                    </div>
+                    <div class="input-field">
+                        <label>Height (px)</label>
+                        <input type="number" [(ngModel)]="resizeHeight" class="app-input" placeholder="e.g. 720" />
+                    </div>
+                </div>
+
+                <div *ngIf="mode === 'convert'" class="setting-group">
+                    <label for="convertFormat" class="setting-label"><i class="fas fa-file-image"></i> Target Format</label>
+                    <select id="convertFormat" [(ngModel)]="convertFormat" class="app-select">
+                        <option value="">Choose Format</option>
+                        <option value="jpeg">JPEG (.jpg)</option>
+                        <option value="png">PNG (.png)</option>
+                        <option value="webp">WebP (.webp)</option>
+                    </select>
+                </div>
+
+                <div *ngIf="mode === 'crop'" class="setting-group-grid two-columns">
+                    <div class="input-field">
+                        <label>X Start (px)</label>
+                        <input type="number" [(ngModel)]="cropX" class="app-input" placeholder="0" />
+                    </div>
+                    <div class="input-field">
+                        <label>Y Start (px)</label>
+                        <input type="number" [(ngModel)]="cropY" class="app-input" placeholder="0" />
+                    </div>
+                    <div class="input-field">
+                        <label>Crop Width (px)</label>
+                        <input type="number" [(ngModel)]="cropWidth" class="app-input" placeholder="e.g. 300" />
+                    </div>
+                    <div class="input-field">
+                        <label>Crop Height (px)</label>
+                        <input type="number" [(ngModel)]="cropHeight" class="app-input" placeholder="e.g. 200" />
+                    </div>
+                </div>
+            </div>
+
+            <button class="process-button"
+                    [disabled]="!selectedFile ||
+                                (mode === 'resize' && (!resizeWidth || !resizeHeight)) ||
+                                (mode === 'convert' && !convertFormat) ||
+                                (mode === 'crop' && (cropX === null || cropY === null || !cropWidth || !cropHeight)) ||
+                                progress > 0"
+                    (click)="upload()">
+                <ng-container *ngIf="progress === 0">
+                    <i class="fas fa-play-circle"></i> {{ getButtonLabel() }}
+                </ng-container>
+                <ng-container *ngIf="progress > 0">
+                    <i class="fas fa-spinner fa-spin"></i> Processing... {{ progress }}%
+                </ng-container>
+            </button>
+
+            <div class="processing-status" *ngIf="progress > 0 && progress < 100">
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="progress"></div>
+                </div>
+                <span class="progress-text">{{ progress }}%</span>
+            </div>
+
         </div>
-  
-        <!-- Upload -->
-        <div class="upload-box" (click)="triggerFileInput()">
-          <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
-          <div class="upload-text">
-            <i class="fas fa-upload"></i>
-            <span *ngIf="!selectedFile">📁 Click or Drop to Upload Image</span>
-            <span *ngIf="selectedFile">✅ {{ selectedFile.name }}</span>
-          </div>
+
+        <div class="preview-panel animate__animated animate__fadeInRight">
+            <h3 class="panel-title"><i class="fas fa-eye"></i> Image Preview</h3>
+            <div class="image-display-area" *ngIf="previewUrl">
+                <img [src]="previewUrl" alt="Image Preview" class="preview-image" />
+            </div>
+            <div class="placeholder-text" *ngIf="!previewUrl">
+                <i class="fas fa-images"></i>
+                <p>Your uploaded image will appear here.</p>
+            </div>
+
+            <div class="result-area" *ngIf="compressedSize > 0 && !errorMessage">
+                <h3 class="panel-title"><i class="fas fa-check-circle"></i> Result</h3>
+                <div class="result-summary">
+                    <!-- NEW: Dynamic result label -->
+                    <p>{{ getResultLabel() }}: <span class="highlight-text">{{ (compressedSize / 1024).toFixed(1) }} KB</span></p>
+                    <p class="original-size-info">Original Size: {{ (originalSize / 1024).toFixed(1) }} KB</p>
+                    <a [href]="blobUrl" [download]="downloadedFileName" class="download-button">
+                        <i class="fas fa-download"></i> Download {{ getResultLabel().replace(' Size', '') }}
+                    </a>
+                    <button type="button" class="reset-button" (click)="clearSelectedFile()">{{ getResultLabel().replace(' Size', '') }} Another</button>
+                </div>
+            </div>
+
+            <div class="error-area" *ngIf="errorMessage">
+                <h3 class="panel-title error-title"><i class="fas fa-exclamation-triangle"></i> Error</h3>
+                <p class="error-message">{{ errorMessage }}</p>
+                <button type="button" class="reset-button" (click)="clearSelectedFile()">Try Again</button>
+            </div>
         </div>
-  
-        <!-- Resize Inputs -->
-        <div *ngIf="mode === 'resize'" class="resize-inputs">
-          <div class="input-group">
-            <label>Width (px)</label>
-            <input type="number" [(ngModel)]="resizeWidth" class="form-control" placeholder="e.g. 800" />
-          </div>
-          <div class="input-group">
-            <label>Height (px)</label>
-            <input type="number" [(ngModel)]="resizeHeight" class="form-control" placeholder="e.g. 600" />
-          </div>
-        </div>
-  
-        <!-- Convert Format -->
-        <div *ngIf="mode === 'convert'" class="form-group">
-          <label for="format">🎯 Target Format</label>
-          <select [(ngModel)]="convertFormat" class="form-select">
-            <option value="">Select Format</option>
-            <option value="jpeg">JPEG</option>
-            <option value="png">PNG</option>
-            <option value="webp">WebP</option>
-          </select>
-        </div>
-  
-        <!-- Crop Inputs -->
-        <div *ngIf="mode === 'crop'" class="resize-inputs">
-          <div class="input-group">
-            <label>X (start)</label>
-            <input type="number" [(ngModel)]="cropX" class="form-control" placeholder="e.g. 50" />
-          </div>
-          <div class="input-group">
-            <label>Y (start)</label>
-            <input type="number" [(ngModel)]="cropY" class="form-control" placeholder="e.g. 50" />
-          </div>
-          <div class="input-group">
-            <label>Width</label>
-            <input type="number" [(ngModel)]="cropWidth" class="form-control" placeholder="e.g. 200" />
-          </div>
-          <div class="input-group">
-            <label>Height</label>
-            <input type="number" [(ngModel)]="cropHeight" class="form-control" placeholder="e.g. 200" />
-          </div>
-        </div>
-  
-        <!-- Upload Button -->
-        <button class="action-btn"
-                [disabled]="!selectedFile || 
-                            (mode === 'resize' && (!resizeWidth || !resizeHeight)) ||
-                            (mode === 'convert' && !convertFormat) ||
-                            (mode === 'crop' && (!cropX && cropX !== 0 || !cropY && cropY !== 0 || !cropWidth || !cropHeight))"
-                (click)="upload()">
-          <i class="fas fa-magic"></i> {{ getButtonLabel() }}
-        </button>
-  
-        <!-- Progress Bar -->
-        <div class="progress" *ngIf="progress > 0">
-          <div class="bar" [style.width.%]="progress"></div>
-          <p>{{ progress }}%</p>
-        </div>
-  
-        <!-- Result -->
-        <div class="result" *ngIf="compressedSize > 0">
-          <p>✅ Final Size: {{ (compressedSize / 1024).toFixed(1) }} KB</p>
-          <a [href]="compressedUrl" [download]="downloadedFileName" class="download-link">
-            <i class="fas fa-download"></i> Download
-          </a>
-        </div>
-      </div>
-  
-      <!-- Right Preview -->
-      <div class="card-preview" *ngIf="selectedFile">
-        <img [src]="previewUrl" alt="Preview" class="preview-img" />
-        <p class="preview-caption">{{ selectedFile.name }}<br>{{ (originalSize / 1024).toFixed(1) }} KB</p>
-      </div>
     </div>
-  </div>
-  
+</div>
