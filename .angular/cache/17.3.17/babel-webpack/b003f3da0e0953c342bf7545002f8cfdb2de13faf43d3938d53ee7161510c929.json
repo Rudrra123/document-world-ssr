@@ -1,0 +1,1 @@
+{"ast":null,"code":"//export const environment = {\n//  apiUrl: 'http://127.0.0.1:8000/api'\n//};\n// src/environments/environment.ts\nexport const environment = {\n  production: false,\n  apiUrl: 'https://document-world-api.onrender.com/api' // ? use deployed API\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
