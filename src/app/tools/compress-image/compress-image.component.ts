@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-compress-image',
@@ -162,7 +163,7 @@ export class CompressImageComponent implements OnDestroy {
       }
       formData.append('width', this.resizeWidth.toString());
       formData.append('height', this.resizeHeight.toString());
-      endpoint = 'http://127.0.0.1:8000/api/resize-image';
+      endpoint = `${environment.apiUrl}/resize-image`;
 
     } else if (this.mode === 'convert') {
       if (!this.convertFormat) {
@@ -170,7 +171,7 @@ export class CompressImageComponent implements OnDestroy {
         return;
       }
       formData.append('target_format', this.convertFormat);
-      endpoint = 'http://127.0.0.1:8000/api/convert-image';
+      endpoint = `${environment.apiUrl}/convert-image`;
 
     } else if (this.mode === 'crop') {
       if (
@@ -185,10 +186,10 @@ export class CompressImageComponent implements OnDestroy {
       formData.append('y', this.cropY.toString());
       formData.append('width', this.cropWidth.toString());
       formData.append('height', this.cropHeight.toString());
-      endpoint = 'http://127.0.0.1:8000/api/crop-image';
+      endpoint = `${environment.apiUrl}/crop-image`;
 
     } else {
-      endpoint = 'http://127.0.0.1:8000/api/compress-image';
+      endpoint = `${environment.apiUrl}/compress-image`;
     }
 
     this.http.post(endpoint, formData, {

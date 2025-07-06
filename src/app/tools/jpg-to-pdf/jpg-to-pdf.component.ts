@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-jpg-to-pdf',
@@ -26,7 +27,7 @@ export class JpgToPdfComponent {
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    this.http.post('http://127.0.0.1:8000/api/jpg-to-pdf', formData, {
+    this.http.post(`${environment.apiUrl}/jpg-to-pdf`, formData, {
       responseType: 'blob',
       reportProgress: true,
       observe: 'events'

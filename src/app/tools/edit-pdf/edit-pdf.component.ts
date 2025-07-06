@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit-pdf',
@@ -29,7 +30,7 @@ export class EditPdfComponent {
     formData.append('new_text', this.newText);
     formData.append('hex_color', this.color);
 
-    this.http.post('http://127.0.0.1:8000/api/edit-pdf', formData, {
+    this.http.post(`${environment.apiUrl}edit-pdf` ,formData, {
       responseType: 'blob',
       reportProgress: true,
       observe: 'events'
