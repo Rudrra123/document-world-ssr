@@ -9,6 +9,7 @@ import { MergeImagesToPdfComponent } from './tools/merge-images-to-pdf/merge-ima
 import { PdfToolsComponent } from './tools/pdf-tools/pdf-tools.component'; 
 import { ProtectPdfPasswordComponent } from './tools/protect-pdf-password/protect-pdf-password.component';
 import { RemovePdfPasswordComponent } from './tools/remove-pdf-password/remove-pdf-password.component';
+import { WordEditComponent } from './tools/word-edit/word-edit.component';
 
 const routes: Routes = [
   { path: 'pdf-tools', component: PdfToolsComponent },  
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'merge-images-to-pdf', component: MergeImagesToPdfComponent },
   { path: 'protect-pdf-password', component: ProtectPdfPasswordComponent },
   { path: 'remove-pdf-password', component: RemovePdfPasswordComponent },
+  { path: 'edit-word', component: WordEditComponent }, // ✅ Add route for word editor
   { path: '', redirectTo: '/pdf-tools', pathMatch: 'full' },
   { path: '**', redirectTo: '/pdf-tools' }, // optional: handle 404s
 

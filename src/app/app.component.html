@@ -1,27 +1,61 @@
-<!-- <h1>📄 Document World</h1>
-<nav> <a routerLink="/jpg-to-pdf" routerLinkActive="active">🖼️ JPG to PDF</a> | <a routerLink="/compress-image"
-        routerLinkActive="active">🗜️ Compress
-        Image</a> | <a routerLink="/edit-pdf" routerLinkActive="active">✏️ Edit
-        PDF</a> | <a routerLink="/pdf-to-word" routerLinkActive="active">📄 PDF to
-        Word</a> | <a routerLink="/word-to-pdf" routerLinkActive="active">📝 Word to
-        PDF</a>|<a routerLink="/merge-images-to-pdf" routerLinkActive="active">
-        🎴 Merge Images to PDF</a>
-</nav>
+<!-- <header class="navbar">
+  <div class="navbar-left">
+    <span class="logo">📄 <strong>Document World</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/pdf-tools" routerLinkActive="active">📄 PDF Tools</a>
+    <a routerLink="/compress-image" routerLinkActive="active">🗜️ Compress Image</a>
+    <a routerLink="/edit-pdf" routerLinkActive="active">✏️ Edit PDF</a>
+    <a routerLink="/protect-pdf-password" routerLinkActive="active">🔒 Protect PDF</a>
+    <a routerLink="/remove-pdf-password" routerLinkActive="active">🔓 Remove PDF</a>
+    <a routerLink="/edit-word" routerLinkActive="active">📝 Edit Word</a>
+
+    <a routerLink="/word-to-pdf" routerLinkActive="active">📝 Word to PDF</a>
+    <a routerLink="/merge-images-to-pdf" routerLinkActive="active">🎴 Merge Images to PDF</a>
+  </nav>
+
+</header>
+
 <hr />
+
 <router-outlet></router-outlet> -->
+<header class="navbar">
+  <div class="navbar-left">
+    <span class="logo">📄 <strong>Document World</strong></span>
+  </div>
 
-<h1>📄 Document World</h1>
+  <nav class="nav-links">
+    <!-- Dropdown Trigger on Hover Only -->
+    <div class="dropdown" (mouseenter)="onDropdownHover(true)" (mouseleave)="onDropdownHover(false)">
+      <a class="dropbtn" routerLink="/pdf-tools" routerLinkActive="active">
+        📄 PDF Tools <i class="fas fa-caret-down"></i>
+      </a>
+      <div class="dropdown-content" [class.show]="showPdfTools">
+        <a routerLink="/pdf-tools/merge" routerLinkActive="active">Merge PDF</a>
+        <a routerLink="/pdf-tools/split" routerLinkActive="active">Split PDF</a>
+        <a routerLink="/pdf-tools/compress" routerLinkActive="active">Compress PDF</a>
+        <a routerLink="/pdf-tools/convert" routerLinkActive="active">Convert PDF</a>
+      </div>
+    </div>
 
-<nav>
-  <a routerLink="/pdf-tools" routerLinkActive="active">📄 PDF Tools</a> |
-  <a routerLink="/compress-image" routerLinkActive="active">🗜️ Compress Image</a> |
-  <a routerLink="/edit-pdf" routerLinkActive="active">✏️ Edit PDF</a> |
-   <a routerLink="/protect-pdf-password" routerLinkActive="active">🔒 Protect PDF</a> |
-  <a routerLink="/remove-pdf-password" routerLinkActive="active">🔓 Remove PDF</a>
-  <!-- <a routerLink="/word-to-pdf" routerLinkActive="active">📝 Word to PDF</a> | -->
-  <!-- <a routerLink="/merge-images-to-pdf" routerLinkActive="active">🎴 Merge Images to PDF</a> -->
-</nav>
-
-<hr />
-
+    <div class="dropdown"
+         (mouseenter)="onCompressDropdownHover(true)"
+         (mouseleave)="onCompressDropdownHover(false)">
+      <a class="dropbtn">
+        🗜️ Compress Tools <i class="fas fa-caret-down"></i>
+      </a>
+      <div class="dropdown-content" [class.show]="showCompressTools">
+        <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'compress' }" routerLinkActive="active" (click)="hideCompressTools()">Compress Image</a>
+        <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'resize' }" routerLinkActive="active" (click)="hideCompressTools()">Resize Image</a>
+        <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'convert' }" routerLinkActive="active" (click)="hideCompressTools()">Convert Image</a>
+        <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'crop' }" routerLinkActive="active" (click)="hideCompressTools()">Crop Image</a>
+      </div>
+    </div>
+    <a routerLink="/edit-pdf" routerLinkActive="active">✏️ Edit PDF</a>
+    <a routerLink="/protect-pdf-password" routerLinkActive="active">🔒 Protect PDF</a>
+    <a routerLink="/remove-pdf-password" routerLinkActive="active">🔓 Remove PDF</a>
+    <a routerLink="/edit-word" routerLinkActive="active">📝 Edit Word</a>
+  </nav>
+</header>
 <router-outlet></router-outlet>

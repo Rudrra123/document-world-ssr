@@ -16,6 +16,7 @@ import { PdfToolsComponent } from './tools/pdf-tools/pdf-tools.component';
 // ✅ Standalone components should go in `imports[]`, not `declarations[]`
 import { ProtectPdfPasswordComponent } from './tools/protect-pdf-password/protect-pdf-password.component';
 import { RemovePdfPasswordComponent } from './tools/remove-pdf-password/remove-pdf-password.component';
+import { WordEditComponent } from './tools/word-edit/word-edit.component'; // ✅ Import
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { RemovePdfPasswordComponent } from './tools/remove-pdf-password/remove-p
 
     // ✅ Import standalone components here
     ProtectPdfPasswordComponent,
-    RemovePdfPasswordComponent
+    RemovePdfPasswordComponent,
+   WordEditComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,26 @@
+<div class="container">
+  <h2>📝 Word Editor</h2>
+
+  <!-- Upload .docx -->
+  <input type="file" (change)="onFileSelected($event)" accept=".docx" />
+
+  <!-- View Button -->
+  <button [disabled]="!rawFile" (click)="viewContent()">👁️ View</button>
+
+  <!-- Quill Editor -->
+  <quill-editor *ngIf="editorVisible"
+                [(ngModel)]="editorContent"
+                [modules]="editorModules"
+                [styles]="{height: '300px'}">
+  </quill-editor>
+
+  <!-- Save Button -->
+  <button class="save-btn" [disabled]="!editorContent" (click)="saveEditedContent()">💾 Save</button>
+
+  <!-- Download Link -->
+  <a *ngIf="downloadUrl" [href]="downloadUrl" download="edited.docx">
+  ⬇️ Download Edited Word File
+</a>
+
+
+</div>

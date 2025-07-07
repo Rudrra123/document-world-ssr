@@ -12,12 +12,11 @@ import { environment } from 'src/environments/environment';
 
 export class PdfToolsComponent implements OnInit, OnDestroy {
   // --- Common Properties ---
-  // `activeTool` will control which section is displayed in the HTML.
-  // Initialize to the default view you want to show first.
-  activeTool: string = 'jpg-to-pdf'; // This replaces your old 'mode' for UI switching.
+  activeTool: string | null = null; // Changed initial state to null so grid is visible initially
 
   progress = 0;
-  downloadUrl: string = '';
+  downloadUrl: string = ''; // This will hold the URL for the download link
+  downloadFileName: string = ''; // To store the specific filename for the download
   errorMessage = '';
   private uploadSubscription: Subscription | null = null;
 
@@ -41,13 +40,16 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
   constructor(private http: HttpClient, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // Initialize usage limits for merge images tool.
-    // If you plan to load user status from an API, call it here.
+    // Optionally, you can read from route params if you want deep linking to specific tools
+    this.route.paramMap.subscribe(params => {
+      const toolParam = params.get('tool');
+      if (toolParam && ['jpg-to-pdf', 'pdf-to-word', 'word-to-pdf', 'merge-images-to-pdf'].includes(toolParam)) {
+        this.setActiveTool(toolParam);
+      } else {
+        this.setActiveTool(null); // Show grid if no valid tool in URL or initially
+      }
+    });
     this.checkUserStatusMerge();
-
-    // The 'mode' property from the URL is no longer directly used for UI switching
-    // but could be used to pre-select a tool if you wanted deep linking.
-    // For now, `activeTool` manages the visible section.
   }
 
   ngOnDestroy(): void {
@@ -55,10 +57,14 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
       this.uploadSubscription.unsubscribe();
       this.uploadSubscription = null;
     }
+    // Clean up Blob URL if any exists
+    if (this.downloadUrl) {
+      URL.revokeObjectURL(this.downloadUrl);
+    }
   }
 
   // --- UI Switching Method (Call from your navigation buttons in HTML) ---
-  setActiveTool(toolName: string): void {
+  setActiveTool(toolName: string | null): void { // Modified to accept null
     this.activeTool = toolName;
     this.reset(); // Reset states when switching tools for a clean slate
   }
@@ -87,6 +93,11 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
       this.uploadSubscription = null;
     }
 
+    // Clean up Blob URL before resetting
+    if (this.downloadUrl) {
+      URL.revokeObjectURL(this.downloadUrl);
+    }
+
     // Reset single file properties
     this.selectedFileSingle = null;
     if (this.fileInputSingle && this.fileInputSingle.nativeElement) {
@@ -103,6 +114,7 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     // Reset common properties
     this.progress = 0;
     this.downloadUrl = '';
+    this.downloadFileName = '';
     this.errorMessage = '';
     this.isDragging = false; // Always reset dragging state
     this.freeUsesRemainingMerge = this.freeUsesLimitMerge; // Reset merge usage to high limit
@@ -110,9 +122,13 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
 
   // --- Reset specific to single file input, used when clearing only that input ---
   resetSingleFile(): void {
+    if (this.downloadUrl) {
+      URL.revokeObjectURL(this.downloadUrl); // Clean up Blob URL
+    }
     this.selectedFileSingle = null;
     this.progress = 0;
     this.downloadUrl = '';
+    this.downloadFileName = '';
     this.errorMessage = '';
     this.isDragging = false;
     if (this.fileInputSingle) {
@@ -122,10 +138,14 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
 
   // --- Reset specific to multiple files input, used when clearing only that input ---
   resetMultipleFiles(): void {
+    if (this.downloadUrl) {
+      URL.revokeObjectURL(this.downloadUrl); // Clean up Blob URL
+    }
     this.selectedFilesMultiple = [];
     this.previewUrlMultiple = '';
     this.progress = 0;
     this.downloadUrl = '';
+    this.downloadFileName = '';
     this.errorMessage = '';
     this.isDragging = false;
     if (this.fileInputMultiple) {
@@ -138,11 +158,13 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
   // This is called before any new upload starts to clear previous results/errors.
   private resetCommonStatesForNewUpload(): void {
     this.progress = 0;
+    if (this.downloadUrl) {
+      URL.revokeObjectURL(this.downloadUrl); // Clean up old Blob URL before new upload
+    }
     this.downloadUrl = '';
+    this.downloadFileName = '';
     this.errorMessage = '';
     this.isDragging = false; // Ensure dragging state is reset
-    // Important: Do NOT clear the file inputs or selectedFile/Multiple here.
-    // They should remain selected until a new file is chosen or a manual reset.
   }
 
   // --- Single File Conversion Methods ---
@@ -152,7 +174,7 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     const file = input.files?.[0] || null;
 
     if (file) {
-      const acceptedTypes = this.getFileAcceptTypes(this.activeTool); // Use activeTool here
+      const acceptedTypes = this.getFileAcceptTypes(this.activeTool || ''); // Use activeTool here, provide fallback
       const isFileTypeAccepted = this.checkFileType(file, acceptedTypes);
 
       if (isFileTypeAccepted) {
@@ -192,7 +214,7 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files[0];
-      const acceptedTypes = this.getFileAcceptTypes(this.activeTool); // Use activeTool here
+      const acceptedTypes = this.getFileAcceptTypes(this.activeTool || ''); // Use activeTool here, provide fallback
       const isFileTypeAccepted = this.checkFileType(file, acceptedTypes);
 
       if (isFileTypeAccepted) {
@@ -265,20 +287,10 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
           this.progress = 100; // Ensure 100% on completion
 
           const blob = new Blob([event.body!], { type: mimeType });
-          const url = URL.createObjectURL(blob);
-          this.downloadUrl = url; // Set download URL for success message
+          this.downloadUrl = URL.createObjectURL(blob); // Set download URL for success message
+          this.downloadFileName = fileName; // Store filename for the manual download button
 
-          // Trigger download automatically
-          setTimeout(() => {
-            const anchor = document.createElement('a');
-            anchor.href = url;
-            anchor.download = fileName;
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
-            URL.revokeObjectURL(url);
-            this.resetSingleFile(); // Reset specific to single file after download
-          }, 500); // Small delay to ensure UI updates
+          // NO AUTOMATIC DOWNLOAD HERE
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -302,12 +314,8 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
       this.selectedFileSingle = null; // Ensure single file is cleared
 
       if (this.selectedFilesMultiple.length > 0) {
-        const firstFile = this.selectedFilesMultiple[0];
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.previewUrlMultiple = e.target.result;
-        };
-        reader.readAsDataURL(firstFile);
+        // You could create a preview for the first image if needed
+        // For now, it's just a count display.
       } else {
         this.previewUrlMultiple = '';
       }
@@ -335,12 +343,7 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
       this.selectedFileSingle = null; // Ensure single file is cleared
 
       if (this.selectedFilesMultiple.length > 0) {
-        const firstFile = this.selectedFilesMultiple[0];
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.previewUrlMultiple = e.target.result;
-        };
-        reader.readAsDataURL(firstFile);
+        // You could create a preview for the first image if needed
       } else {
         this.previewUrlMultiple = '';
       }
@@ -423,23 +426,10 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
 
           if (event.body) {
             const blob = new Blob([event.body], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            this.downloadUrl = url; // Set download URL for success message
+            this.downloadUrl = URL.createObjectURL(blob); // Set download URL for success message
+            this.downloadFileName = 'merged_images.pdf'; // Specific name for merged PDF for manual download
 
-            // Programmatically trigger download
-            setTimeout(() => {
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = 'merged_images.pdf'; // Specific name for merged PDF
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-              // Do NOT reset the component fully here. Let the user see the download link
-              // and manually click "Start New Conversion".
-              // The `downloadUrl` being set ensures the download section appears.
-            }, 500);
-
+            // NO AUTOMATIC DOWNLOAD HERE
             this.incrementDailyUsageMerge(); // Increment usage upon successful merge
           } else {
             this.errorMessage = 'PDF creation failed: Empty response from server.';
@@ -457,11 +447,36 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Triggers the download of the file (for both single and multiple conversions).
+   * This method is called when the "Download PDF" or "Download Word" button is clicked.
+   */
+  downloadPdf(): void {
+    if (this.downloadUrl && this.downloadFileName) {
+      const link = document.createElement('a');
+      link.href = this.downloadUrl;
+      link.download = this.downloadFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      // It's a good practice to revoke the object URL after it's no longer needed,
+      // but if the user might click "Download" multiple times, you might delay this
+      // until `resetSingleFile()` or `resetMultipleFiles()` is called.
+      // For now, we'll keep it here as it's triggered by a button.
+      // URL.revokeObjectURL(this.downloadUrl); // Uncomment this if you only want a single download opportunity
+    }
+  }
+
+
   // --- Utility methods ---
   private handleUploadError(error: HttpErrorResponse): void {
     console.error('Upload error:', error);
     this.progress = 0; // Reset progress on error
+    if (this.downloadUrl) {
+      URL.revokeObjectURL(this.downloadUrl); // Clean up Blob URL on error
+    }
     this.downloadUrl = ''; // Clear any download URL on error
+    this.downloadFileName = ''; // Clear filename on error
 
     if (error.error instanceof ErrorEvent) {
       // Client-side error or network error

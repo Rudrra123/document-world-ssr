@@ -1,881 +1,760 @@
-/* General Layout & Background - Even softer with Animated Elements */
+/* General Styling */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 body {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    /* Animated Background Overlay (new) */
-    position: relative; /* Needed for absolute positioning of pseudo-elements */
-    overflow: hidden; /* Hide anything overflowing from the animated elements */
-    z-index: 1; /* Ensure body is a stacking context */
-
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align to start, allowing content to flow down */
-    min-height: 100vh;
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f9;
     color: #333;
-    padding: 30px 0; /* Add vertical padding */
+    margin: 0;
+    padding: 2rem;
+    overflow-x: hidden; /* Prevent horizontal scroll due to animations */
 }
 
-/* Pseudo-element for the animated geometric pattern (new) */
-body::before {
+.docuflow-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative; /* For potential absolute positioning of elements */
+}
+
+/* Header */
+.main-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInScale 0.8s ease-out; /* Added animation */
+}
+.main-header h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #1e2a3b;
+    background: linear-gradient(45deg, #1e2a3b, #457b9d); /* Subtle gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.main-header p {
+    font-size: 1.2rem;
+    color: #6a737d;
+    position: relative; /* For pseudo-element underline */
+    display: inline-block;
+}
+.main-header p::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background-color: #457b9d;
+    transition: width 0.3s ease, left 0.3s ease;
+    transform: translateX(-50%);
+}
+.main-header:hover p::after {
     width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 20% 80%, rgba(0, 123, 255, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(40, 167, 69, 0.05) 0%, transparent 50%);
-    background-size: 150% 150%;
-    animation: moveGradient 20s linear infinite alternate;
-    z-index: -1; /* Behind the main content */
-    opacity: 0.7; /* Subtle */
-}
-
-/* Another pseudo-element for subtle floating shapes/icons (new) */
-body::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
     left: 0;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23ced4da" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="10" y2="9"></line></svg>'), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23ced4da" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>');
-    background-repeat: repeat;
-    background-size: 150px 150px, 120px 120px; /* Adjust size of repeating patterns */
-    opacity: 0.1; /* Very subtle */
-    animation: floatShapes 30s linear infinite;
-    z-index: -2; /* Even further back */
-}
-
-@keyframes moveGradient {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
-}
-
-@keyframes floatShapes {
-    from { transform: translate(0, 0); }
-    to { transform: translate(100px, 100px); } /* Gentle movement */
+    transform: translateX(0);
 }
 
 
-.main-container {
+/* Tool Grid Layout */
+.tool-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Tool Card Styling */
+.tool-card {
     background: #ffffff;
-    border-radius: 25px;
-    box-shadow: 0 25px 75px rgba(0, 0, 0, 0.08); /* More diffused shadow */
-    width: 90%; /* Max width for content */
-    max-width: 1100px; /* Increased max-width */
-    padding: 50px; /* Generous padding */
-    text-align: center;
-    position: relative;
-    overflow: hidden; /* Keep content within bounds, but consider if this hides background elements */
-    border: 1px solid #dee2e6; /* Lighter border */
-    z-index: 2; /* Ensure main container is above background animations */
-}
-
-/* Header Section - Stronger heading, better paragraph */
-.header-section {
-    margin-bottom: 40px;
-}
-
-.header-section h1 {
-    font-size: 3rem; /* Slightly larger */
-    font-weight: 800; /* Bolder */
-    letter-spacing: -1px; /* Tighter letter spacing */
-    color: #212529; /* Darker, more impactful text */
-    margin-bottom: 10px;
-}
-
-.header-section p {
-    font-size: 1.25rem;
-    color: #6c757d;
-    line-height: 1.6; /* Better readability */
-    font-weight: 400;
-}
-
-/* Tool Navigation - More distinct hover/active */
-.tool-navigation {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 15px; /* Space between buttons */
-    margin-bottom: 50px;
-    border-bottom: 2px solid #f0f0f0; /* Subtle separator */
-    padding-bottom: 20px;
-}
-
-.nav-button {
-    background-color: #f7f7f7;
-    color: #555;
-    border: none; /* Removed border for cleaner look */
-    padding: 12px 25px;
-    border-radius: 10px;
-    font-size: 1.05rem;
-    font-weight: 500;
+    border: 1px solid #e0e6ed;
+    border-radius: 12px; /* Slightly more rounded */
+    padding: 1.5rem;
+    text-align: left;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
     display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    position: relative; /* For potential pseudo-elements */
-    overflow: hidden;
+    flex-direction: column;
+    position: relative; /* For subtle highlight effect */
+    overflow: hidden; /* For ripple effect or highlight */
 }
 
-.nav-button:hover {
-    background-color: #e2e6ea;
-    transform: translateY(-5px); /* More pronounced lift */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+.tool-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
-.nav-button.active {
-    background: linear-gradient(45deg, #007bff, #0056d2); /* Deeper blue gradient */
-    color: white;
-    /* border-color: #007bff; /* No border */
-    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
-    transform: translateY(-3px);
+.tool-card:hover::before {
+    opacity: 1;
+    animation: toolCardShine 1.5s infinite;
 }
 
-.nav-button i {
-    transition: transform 0.3s ease; /* Smooth icon movement */
-}
-.nav-button:hover i {
-    transform: scale(1.1);
-}
-
-/* Tool Sections - More subtle */
-.tool-section {
-    background-color: #ffffff; /* Pure white inside */
-    border: 1px solid #f0f0f0;
-    border-radius: 20px;
-    padding: 40px;
-    margin-bottom: 30px;
-    text-align: center;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.04); /* Lighter section shadow */
-    display: none; /* Hidden by default, managed by Angular class binding */
-    animation: fadeIn 0.6s ease-out forwards; /* Fade in animation */
+.tool-card:hover {
+    transform: translateY(-8px) scale(1.02); /* More pronounced lift and slight scale */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1); /* Stronger shadow */
+    border-color: #a8dadc; /* Subtle border color change */
 }
 
-.tool-section.active {
-    display: block; /* Show active section */
-}
-
-.tool-section h2 {
-    font-size: 2.2rem;
-    color: #34495e;
-    margin-bottom: 15px;
-    font-weight: 600;
+.tool-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Make icons circular */
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 15px;
+    align-items: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Add shadow to icon */
+    transition: transform 0.2s ease;
+}
+
+.tool-card:hover .tool-icon-wrapper {
+    transform: rotate(5deg) scale(1.1); /* Rotate and scale icon on hover */
+}
+
+.tool-icon-wrapper i {
+    color: #fff;
+    font-size: 1.8rem;
+    transition: transform 0.2s ease;
+}
+
+.tool-card:hover .tool-icon-wrapper i {
+    transform: scale(1.05); /* Slight scale on icon itself */
+}
+
+.tool-title {
+    font-size: 1.4rem; /* Slightly larger */
+    font-weight: 700;
+    color: #1e2a3b;
+    margin: 0 0 0.5rem 0;
 }
 
 .tool-description {
-    font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 35px;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    font-size: 1rem;
+    color: #6a737d;
+    line-height: 1.5;
+    margin: 0;
+    flex-grow: 1;
 }
 
-/* Upload Area (Refined) */
+/* Icon Background Colors */
+.bg-red { background-color: #e63946; }
+.bg-blue { background-color: #457b9d; }
+.bg-green { background-color: #52b788; }
+.bg-orange { background-color: #f77f00; }
+
+/* Styles for the Active Tool Workspace */
+.tool-workspace-wrapper {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px; /* Consistent rounding */
+    border: 1px solid #e0e6ed;
+    margin-top: 2rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08); /* More prominent shadow */
+}
+
+.back-to-grid-btn {
+    background-color: #f4f7f9;
+    color: #333;
+    border: 1px solid #d1d9e2;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 30px; /* Pill shape */
+    cursor: pointer;
+    margin-bottom: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    float: right;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.back-to-grid-btn:hover {
+    background-color: #e9eef3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.back-to-grid-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.tool-section {
+    display: none;
+    padding-top: 1rem;
+}
+
+.tool-section.active {
+    display: block;
+    animation: slideInFromRight 0.6s ease-out; /* More dynamic entry */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInFromRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toolCardShine {
+    0% { transform: translate(-100%, -100%) rotate(45deg); opacity: 0; }
+    30% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { transform: translate(100%, 100%) rotate(45deg); opacity: 0; }
+}
+
+/* Upload Area Styles (Reused for all sections) */
 .upload-area-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px; /* Space between upload box and button */
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background-color: #fbfdff;
+    border: 2px dashed #9bc5f4; /* Stronger initial dashed border */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* More subtle initial shadow */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.upload-area-container:hover {
+    border-color: #6da2e7;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
 .upload-box {
-    background-color: #f8fafd; /* Very light, inviting blue */
-    border: 3px dashed #b3d9ff; /* Brighter, clearer dashed line */
-    padding: 50px 30px;
-    cursor: pointer;
-    border-radius: 20px;
-    transition: all 0.4s ease-in-out;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 200px; /* Taller upload area */
-    position: relative;
     width: 100%;
-    max-width: 600px; /* Constrain width */
-    margin: 0 auto; /* Center it */
-    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.05); /* Subtle initial shadow */
-}
-
-.upload-box:hover {
-    background-color: #e9f5ff;
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 123, 255, 0.15); /* Stronger hover shadow */
-    border-color: #66b3ff;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    border: none; /* Removed redundant border here, container has it */
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden; /* For ripple effect */
 }
 
 .upload-box.drag-over {
-    background-color: #d8edff;
-    border-color: #007bff;
-    box-shadow: 0 0 50px rgba(0, 123, 255, 0.5); /* Strong, glowing effect */
-    animation: pulseBorder 1.5s infinite alternate; /* Pulsing animation */
-}
-
-@keyframes pulseBorder {
-    from { border-color: #007bff; }
-    to { border-color: #66b3ff; }
+    background-color: #e0f2f7;
+    border-color: #2196f3; /* A more prominent blue for drag-over */
+    transform: translateY(-5px); /* Lift up on drag-over */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .upload-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    color: #555;
-    width: 100%;
+    gap: 0.8rem;
+    padding: 1rem;
 }
 
-.upload-icon {
-    font-size: 4rem; /* Larger icon */
-    color: #007bff; /* Primary blue icon */
-    transition: transform 0.3s ease;
+.select-pdf-file-btn {
+    background-color: #457b9d; /* Blue from tool card */
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
 }
 
-.upload-box:hover .upload-icon {
-    transform: translateY(-8px) scale(1.1);
+.select-pdf-file-btn:hover {
+    background-color: #3d6f8f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+.select-pdf-file-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.upload-prompt-text {
-    font-size: 1.3rem; /* Larger prompt text */
-    font-weight: 600; /* Make it stand out more */
-    color: #343a40;
+.select-pdf-file-btn-alt-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
 }
 
-.supported-formats {
-    font-size: 0.95rem;
+.small-icon-btn {
+    background-color: #f0f4f7;
+    border: 1px solid #d1d9e2;
+    color: #6a737d;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.small-icon-btn:hover {
+    background-color: #e2e8ed;
+    color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.or-drop-text {
+    font-size: 1rem;
     color: #888;
-    margin-top: 5px;
+    margin-top: 1rem;
 }
 
-.success-icon-file { /* For file selected checkmark */
-    color: #28a745;
-    font-size: 2.5rem; /* Slightly larger */
-    margin-bottom: 10px;
+/* Styles for when a file is selected */
+.file-preview-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    animation: fadeIn 0.5s ease; /* Entry animation for file preview */
 }
+
+.file-thumbnail {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    background-color: #f0f4f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.file-pdf-icon { /* Reused for PDF, Word, Image icons */
+    font-size: 3rem;
+    color: #e63946; /* Default red for PDF/Word, overridden for specific tools */
+}
+#jpg-to-pdf-section .file-pdf-icon,
+#merge-images-to-pdf-section .file-pdf-icon {
+    color: #f77f00; /* Orange for image icons */
+}
+#word-to-pdf-section .file-pdf-icon {
+    color: #457b9d; /* Blue for Word icons */
+}
+
 
 .file-name-display {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #333;
-    max-width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #1e2a3b;
+    word-break: break-all;
+    text-align: center;
 }
 
 .file-size-display {
-    font-size: 0.95rem;
-    color: #777;
-    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #6a737d;
+    margin-top: 0.2rem;
 }
 
-.clear-file-btn {
-    background-color: #dc3545; /* Red clear button */
+.remove-file-preview-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(230, 57, 70, 0.8); /* Semi-transparent red */
     color: white;
     border: none;
-    padding: 8px 18px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.remove-file-preview-btn:hover {
+    background-color: #e63946;
+    transform: scale(1.1);
+}
+
+/* Convert Action Button */
+.convert-action-btn {
+    background: linear-gradient(45deg, #e63946, #e05e6b); /* Gradient button */
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem; /* Slightly larger text */
+    font-weight: 600;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-top: 15px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.clear-file-btn:hover {
-    background-color: #c82333;
-    transform: scale(1.05);
-}
-
-/* Convert Button (Refined) */
-.convert-action-btn {
-    background: linear-gradient(45deg, #28a745, #1d6e32); /* Deeper green */
-    border: none;
-    padding: 18px 40px;
-    border-radius: 15px;
-    color: white;
-    font-size: 1.25rem;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    box-shadow: 0 12px 30px rgba(40, 167, 69, 0.4);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother animation */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    width: 100%;
+    max-width: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    width: 100%;
-    max-width: 280px;
+    gap: 0.8rem;
+    margin: 2rem auto 0 auto; /* Center button below upload area */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
-.convert-action-btn:hover {
-    background: linear-gradient(45deg, #218838, #16572a);
-    transform: translateY(-6px); /* More pronounced lift */
-    box-shadow: 0 20px 45px rgba(40, 167, 69, 0.55);
+.convert-action-btn:hover:not(:disabled) {
+    background: linear-gradient(45deg, #cc2a35, #d64d5d);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.convert-action-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
 .convert-action-btn:disabled {
     background: #cccccc;
-    color: #888888;
-    animation: none;
     cursor: not-allowed;
+    opacity: 0.7;
     box-shadow: none;
-    transform: none;
 }
 
-/* Progress Indicator (Refined) */
+/* Progress and Status Area */
+.global-status-area {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.loading-animation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: #e0f2f7;
+    border: 1px solid #a8dadc;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    animation: fadeIn 0.6s ease-out; /* Entry animation */
+}
+
+.loading-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #457b9d;
+    margin: 0;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #457b9d; /* Blue spinner */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-info-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 500px;
+    padding: 1.5rem;
+    background-color: #f8fcfd;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    animation: fadeIn 0.6s ease-out;
+}
+
+.upload-progress-text,
+.upload-file-details,
+.upload-speed-time-left,
+.upload-percentage-text,
+.upload-status-text {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0;
+    text-align: center;
+}
+
+.upload-progress-text {
+    font-weight: 600;
+    color: #333;
+}
+
+.upload-percentage-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4CAF50;
+    margin-top: 0.5rem;
+}
+.upload-status-text {
+    font-weight: 600;
+    color: #457b9d;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+}
+
 .progress-indicator {
     width: 100%;
-    max-width: 400px; /* Constrain width */
-    height: 12px;
-    background-color: #e9ecef;
+    max-width: 400px;
+    height: 12px; /* Slightly thicker */
+    background-color: #e0e0e0;
     border-radius: 6px;
-    margin-top: 20px; /* Add margin for spacing */
-    position: relative;
     overflow: hidden;
+    margin-top: 1rem;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #007bff, #00d4ff); /* Fresh blue to light blue gradient */
+    background: linear-gradient(to right, #80ed99, #4CAF50); /* Gradient progress bar */
     width: 0%;
-    border-radius: 6px;
-    transition: width 0.6s ease-out; /* Slower, smoother fill */
-}
-
-.progress-percentage {
-    font-size: 0.95rem;
-    color: #555;
-    margin-top: 10px; /* Space between bar and text */
-}
-
-/* Result Message Boxes (Success/Error) */
-.result-message-box {
-    margin-top: 40px;
-    padding: 25px;
-    border-radius: 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    width: 100%;
-    max-width: 500px; /* Constrain width */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.result-message-box.success {
-    background: #d4edda; /* Deeper green background */
-    border: 1px solid #28a745; /* Green border */
-    color: #155724; /* Darker green text */
-    box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
-}
-
-.result-message-box.error {
-    background: #f8d7da;
-    border: 1px solid #dc3545;
-    color: #721c24;
-    box-shadow: 0 10px 25px rgba(220, 53, 69, 0.3);
-}
-
-.download-btn {
-    background: linear-gradient(45deg, #17a2b8, #138496); /* Teal download button */
-    color: white;
-    padding: 12px 25px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 6px 18px rgba(23, 162, 184, 0.3);
-    transition: all 0.3s ease;
-}
-
-.download-btn:hover {
-    background: linear-gradient(45deg, #138496, #0f6674);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(23, 162, 184, 0.45);
-}
-
-.reset-conversion-btn {
-    background: #6c757d; /* Dark gray for reset */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.reset-conversion-btn:hover {
-    background: #5a6268;
-    transform: translateY(-2px);
-}
-
-/* Specific Merge Images Styles */
-.multi-image-upload {
-    min-height: 280px; /* Taller for multiple files */
-    justify-content: flex-start; /* Align content to the top for better list display */
-    padding-top: 30px; /* Adjust padding for content alignment */
-}
-
-.multi-image-upload .upload-content {
-    flex-direction: column; /* Ensure vertical stacking */
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-}
-
-.multi-image-upload.has-files {
-    background-color: #eaf7ed; /* Soft green */
-    border-color: #28a745; /* Green border when files are selected */
-}
-
-.selected-files-summary-display {
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping */
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #218838; /* A shade deeper green */
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-.selected-files-summary-display .success-icon-file {
-    font-size: 2.5rem;
-}
-
-.selected-file-list-preview {
-    text-align: left;
-    width: 90%; /* Constrain width for list */
-    max-height: 160px; /* Limit height for scrollable list */
-    overflow-y: auto; /* Enable scrolling */
-    border-top: 1px dashed #cccccc;
-    padding-top: 15px;
-    margin-top: 15px;
-}
-
-.selected-file-list-preview .list-heading {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #34495e;
-    margin-bottom: 10px;
-}
-
-.selected-file-list-preview ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.selected-file-list-preview li {
-    display: flex;
-    align-items: center;
-    font-size: 0.95rem;
-    color: #666;
-    margin-bottom: 8px;
-    padding: 5px 0;
-    border-bottom: 1px dotted #e0e0e0;
-}
-
-.selected-file-list-preview li:last-child {
-    border-bottom: none;
-}
-
-.selected-file-list-preview .file-icon {
-    margin-right: 8px;
-    color: #007bff; /* Use primary blue for file icon */
-}
-
-/* Image Preview Section for Merge */
-.image-preview-section-container {
-    margin-top: 30px;
-    padding: 25px;
-    background-color: #f7fbff;
-    border-radius: 15px;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    width: 100%;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-}
-
-.image-preview-section-container h3 {
-    font-size: 1.3rem;
-    color: #34495e;
-    margin-bottom: 15px;
-}
-
-.image-preview-wrapper-new {
-    max-width: 200px;
-    max-height: 200px;
-    overflow: hidden;
-    margin: 0 auto 15px auto;
-    border-radius: 10px;
-    border: 3px solid #e0e0e0; /* Subtle border for preview */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.preview-img-new {
-    width: 100%;
-    height: auto;
-    display: block;
-    animation: fadeIn 0.8s ease;
-}
-
-/* Usage Limit Info for Merge */
-.usage-limit-info-new {
-    background-color: #fefce8; /* Lighter yellow */
-    border: 1px solid #ffe89f;
-    color: #8a6d00;
-    padding: 15px 20px;
-    border-radius: 12px;
-    margin-top: 30px;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    text-align: left;
-    width: 100%;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.usage-limit-info-new .highlight-count {
-    font-weight: 700;
-    color: #cc8400; /* Stronger highlight */
-}
-
-.usage-limit-info-new .limit-reached-message {
-    font-weight: 600;
-    color: #dc3545; /* Red for limit reached */
-}
-
-.usage-limit-info-new .file-count-warning {
-    font-weight: 600;
-    color: #dc3545; /* Red for file count warning */
-}
-
-.usage-limit-info-new a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.usage-limit-info-new a:hover {
-    text-decoration: underline;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .main-container {
-        padding: 30px;
-        width: 95%;
-    }
-
-    .header-section h1 {
-        font-size: 2.2rem;
-    }
-
-    .header-section p {
-        font-size: 1rem;
-    }
-
-    .tool-navigation {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .nav-button {
-        padding: 10px 15px;
-        font-size: 0.95rem;
-    }
-
-    .tool-section h2 {
-        font-size: 1.8rem;
-        gap: 10px;
-    }
-
-    .tool-description {
-        font-size: 0.95rem;
-    }
-
-    .upload-box {
-        padding: 40px 20px;
-        min-height: 180px;
-    }
-
-    .upload-icon {
-        font-size: 3rem;
-    }
-
-    .upload-prompt-text {
-        font-size: 1.1rem;
-    }
-
-    .convert-action-btn {
-        padding: 15px 30px;
-        font-size: 1.1rem;
-    }
-
-    .result-message-box {
-        padding: 20px;
-        font-size: 1rem;
-    }
-
-    .download-btn, .reset-conversion-btn {
-        padding: 10px 20px;
-        font-size: 0.95rem;
-    }
-
-    .selected-file-list-preview {
-        width: 100%; /* Take full width on small screens */
-    }
-}/* New Background Elements for Main Container */
-.main-container {
-    position: relative; /* Ensure children can be absolutely positioned relative to this */
-    overflow: hidden; /* Hide parts of blobs that move outside the container */
-    z-index: 0; /* Make sure content inside is above these background elements */
-}
-
-.main-container-bg-elements {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Allows clicks to pass through to content below */
-    z-index: -1; /* Ensures these elements are behind the content */
-}
-
-.background-blob {
-    position: absolute;
-    border-radius: 50%; /* Makes them circular/blob-like */
-    opacity: 0.1; /* Very subtle */
-    filter: blur(80px); /* Creates a soft, glowing effect */
-    animation: blobMove 20s infinite ease-in-out alternate;
-}
-
-/* Specific styling for each blob to vary size, color, and starting position */
-.blob-one {
-    width: 300px;
-    height: 300px;
-    background: #007bff; /* Primary blue */
-    top: -50px;
-    left: -50px;
-    animation-delay: 0s;
-    animation-duration: 25s;
-}
-
-.blob-two {
-    width: 250px;
-    height: 250px;
-    background: #28a745; /* Green */
-    bottom: -70px;
-    right: -70px;
-    animation-delay: 5s;
-    animation-duration: 20s;
-}
-
-.blob-three {
-    width: 200px;
-    height: 200px;
-    background: #17a2b8; /* Teal */
-    top: 60%;
-    left: 20%;
-    animation-delay: 10s;
-    animation-duration: 30s;
-}
-
-/* Keyframe animation for blobs */
-@keyframes blobMove {
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-    25% {
-        transform: translate(50px, -30px) scale(1.05);
-    }
-    50% {
-        transform: translate(100px, 50px) scale(0.9);
-    }
-    75% {
-        transform: translate(-50px, 80px) scale(1.1);
-    }
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-}/* Ensure the main-container has a proper stacking context and clips overflows */
-.main-container {
+    transition: width 0.4s ease-out; /* Smoother transition */
     position: relative;
-    overflow: hidden; /* Crucial for clipping the animated background elements */
-    z-index: 1; /* Ensure main content layers above default document flow */
-    /* Add existing styles like background, border-radius, box-shadow if they are on main-container */
-    /* Example:
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    */
+    overflow: hidden;
 }
-
-/* Container for all background animations */
-.main-container-bg-elements {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Allow clicks to pass through */
-    z-index: -1; /* Place behind all content */
-    border-radius: inherit; /* Inherit border-radius from main-container for smooth clipping */
-    overflow: hidden; /* Ensure anything within this also respects the parent's rounded corners */
-}
-
-/* Animated Gradient Overlay */
-.animated-gradient-overlay {
-    position: absolute;
-    top: -50%; /* Start gradient from outside the top */
-    left: -50%; /* Start gradient from outside the left */
-    width: 200%; /* Make it large enough to cover during animation */
-    height: 200%; /* Make it large enough to cover during animation */
-    /* Choose colors that complement your existing design */
-    background: linear-gradient(
-        45deg,
-        #a4c7f0, /* Light blue/periwinkle */
-        #e0aaff, /* Soft lavender/pink */
-        #99e2b4, /* Muted green */
-        #ffc79a  /* Soft orange/peach */
-    );
-    background-size: 400% 400%; /* Important for the shifting gradient effect */
-    opacity: 0.2; /* Keep it very subtle */
-    animation: gradientShift 30s ease infinite alternate; /* Slow, smooth, alternating animation */
-}
-
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* Background Particles/Stars */
-.background-particles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent; /* Initially transparent */
-    animation: particlesMovement 120s linear infinite; /* Very slow, continuous movement */
-}
-
-/* Using box-shadow for a "starfield" effect */
-.background-particles::before,
-.background-particles::after {
+.progress-bar-fill::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 1px;
-    height: 1px;
-    background: transparent;
-    border-radius: 50%;
-    /* The magic happens with many box-shadows to create "stars" or "dots" */
-    box-shadow:
-        /* Layer 1: Smaller, brighter dots */
-        20px 20px 0 #fff, 100px 70px 0 #fff, 150px 10px 0 #fff, 200px 90px 0 #fff,
-        250px 30px 0 #fff, 300px 110px 0 #fff, 350px 50px 0 #fff, 400px 10px 0 #fff,
-        450px 80px 0 #fff, 500px 20px 0 #fff, 550px 100px 0 #fff, 600px 40px 0 #fff,
-        650px 120px 0 #fff, 700px 60px 0 #fff, 750px 0px 0 #fff, 800px 100px 0 #fff,
-        850px 30px 0 #fff, 900px 100px 0 #fff, 950px 50px 0 #fff, 1000px 10px 0 #fff,
-        1050px 90px 0 #fff, 1100px 20px 0 #fff, 1150px 110px 0 #fff, 1200px 70px 0 #fff,
-        /* Layer 2: Slightly larger, slightly less bright */
-        10px 150px 0 rgba(255, 255, 255, 0.8), 80px 200px 0 rgba(255, 255, 255, 0.8),
-        180px 130px 0 rgba(255, 255, 255, 0.8), 280px 180px 0 rgba(255, 255, 255, 0.8),
-        380px 110px 0 rgba(255, 255, 255, 0.8), 480px 160px 0 rgba(255, 255, 255, 0.8),
-        580px 90px 0 rgba(255, 255, 255, 0.8), 680px 210px 0 rgba(255, 255, 255, 0.8),
-        780px 140px 0 rgba(255, 255, 255, 0.8), 880px 190px 0 rgba(255, 255, 255, 0.8),
-        980px 120px 0 rgba(255, 255, 255, 0.8), 1080px 170px 0 rgba(255, 255, 255, 0.8),
-        1180px 100px 0 rgba(255, 255, 255, 0.8), 1280px 150px 0 rgba(255, 255, 255, 0.8),
-        /* Layer 3: Fainter, larger, more diffused */
-        30px 250px 0 rgba(255, 255, 255, 0.5), 120px 300px 0 rgba(255, 255, 255, 0.5),
-        220px 230px 0 rgba(255, 255, 255, 0.5), 320px 280px 0 rgba(255, 255, 255, 0.5),
-        420px 210px 0 rgba(255, 255, 255, 0.5), 520px 260px 0 rgba(255, 255, 255, 0.5),
-        620px 190px 0 rgba(255, 255, 255, 0.5), 720px 310px 0 rgba(255, 255, 255, 0.5),
-        820px 240px 0 rgba(255, 255, 255, 0.5), 920px 290px 0 rgba(255, 255, 255, 0.5),
-        1020px 220px 0 rgba(255, 255, 255, 0.5), 1120px 270px 0 rgba(255, 255, 255, 0.5),
-        1220px 200px 0 rgba(255, 255, 255, 0.5), 1320px 250px 0 rgba(255, 255, 255, 0.5);
-    /* For ::after, change these positions to create more dots */
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.1) 100%);
+    animation: shimmer 1.5s infinite; /* Shimmer effect */
 }
 
-/* For the second pseudo-element to create more dots */
-.background-particles::after {
-    box-shadow:
-        /* A different set of random positions for the dots */
-        70px 25px 0 #fff, 130px 90px 0 #fff, 180px 45px 0 #fff, 230px 115px 0 #fff,
-        280px 60px 0 #fff, 330px 130px 0 #fff, 380px 80px 0 #fff, 430px 140px 0 #fff,
-        480px 95px 0 #fff, 530px 15px 0 #fff, 580px 75px 0 #fff, 630px 105px 0 #fff,
-        680px 20px 0 #fff, 730px 110px 0 #fff, 780px 55px 0 #fff, 830px 125px 0 #fff,
-        880px 70px 0 #fff, 930px 140px 0 #fff, 980px 85px 0 #fff, 1030px 10px 0 #fff,
-        1080px 95px 0 #fff, 1130px 30px 0 #fff, 1180px 120px 0 #fff, 1230px 65px 0 #fff,
-        /* Layer 2 for after */
-        60px 220px 0 rgba(255, 255, 255, 0.7), 150px 270px 0 rgba(255, 255, 255, 0.7),
-        250px 200px 0 rgba(255, 255, 255, 0.7), 350px 250px 0 rgba(255, 255, 255, 0.7),
-        450px 180px 0 rgba(255, 255, 255, 0.7), 550px 230px 0 rgba(255, 255, 255, 0.7),
-        650px 160px 0 rgba(255, 255, 255, 0.7), 750px 290px 0 rgba(255, 255, 255, 0.7),
-        850px 210px 0 rgba(255, 255, 255, 0.7), 950px 260px 0 rgba(255, 255, 255, 0.7),
-        1050px 190px 0 rgba(255, 255, 255, 0.7), 1150px 240px 0 rgba(255, 255, 255, 0.7),
-        1250px 170px 0 rgba(255, 255, 255, 0.7), 1350px 220px 0 rgba(255, 255, 255, 0.7);
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
-/* Animation for the particles/stars */
-@keyframes particlesMovement {
-    0% {
-        transform: translate(0, 0);
+
+/* Result Message Boxes */
+.result-message-box {
+    width: 100%;
+    max-width: 450px; /* Slightly wider */
+    padding: 1.5rem 2rem; /* More padding */
+    border-radius: 10px; /* More rounded */
+    margin-top: 2rem; /* More space */
+    text-align: center;
+    font-size: 1.05rem; /* Slightly larger text */
+    line-height: 1.6;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1); /* Stronger shadow */
+    animation: slideInFromBottom 0.6s ease-out; /* New entry animation */
+}
+
+@keyframes slideInFromBottom {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+.result-message-box.success {
+    background-color: #e8ffee;
+    border: 1px solid #38b000; /* Darker green border */
+    color: #1e2a3b;
+}
+
+.result-message-box.error {
+    background-color: #ffe8e8;
+    border: 1px solid #d00000; /* Darker red border */
+    color: #1e2a3b;
+}
+
+.result-message-box p {
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.download-btn, .reset-conversion-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem; /* Slightly more space */
+    padding: 0.9rem 1.8rem; /* Larger buttons */
+    border-radius: 30px; /* Pill shape */
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin: 0.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.download-btn {
+    background: linear-gradient(45deg, #4CAF50, #6ac96e); /* Gradient green */
+    color: white;
+    border: none;
+}
+
+.download-btn:hover {
+    background: linear-gradient(45deg, #45a049, #60ba64);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+}
+
+.reset-conversion-btn {
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #c8d1da;
+}
+
+.reset-conversion-btn:hover {
+    background-color: #dde1e5;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+}
+
+/* Multi-image specific styles */
+.multi-image-upload.has-files {
+    padding: 1.5rem;
+    min-height: 150px;
+}
+
+.selected-files-summary-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+.selected-files-summary-display p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #1e2a3b;
+    margin: 0;
+}
+
+/* Flexbox for PDF to Word layout */
+.pdf-to-word-layout {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: center; /* Center items when wrapped */
+}
+
+.main-upload-content {
+    flex: 2; /* Takes more space */
+    min-width: 300px; /* Minimum width for the upload area */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.right-sidebar {
+    flex: 1; /* Takes less space */
+    min-width: 200px; /* Minimum width for sidebar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 3rem; /* Align with the upload box's top content */
+}
+
+.sidebar-convert-btn {
+    margin: 0 !important; /* Override default margin from .convert-action-btn */
+    width: auto !important; /* Override default width */
+    min-width: 180px;
+    padding: 1.2rem 2rem; /* Make it slightly larger */
+    font-size: 1.1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
     }
-    100% {
-        /* Move particles slowly across the entire width/height */
-        transform: translate(-100vw, -100vh); /* Adjust as needed for desired movement */
+    .main-header h1 {
+        font-size: 2.2rem;
     }
-}
-
-/* Important: Make sure your main content container (like .tool-sections-wrapper) has a z-index higher than -1 to appear above the background */
-.header-section, .tool-navigation, .tool-sections-wrapper {
-    position: relative; /* Essential for z-index to work */
-    z-index: 2; /* Ensures content is always on top of the background */
+    .main-header p {
+        font-size: 1rem;
+    }
+    .tool-card {
+        padding: 1rem;
+    }
+    .tool-title {
+        font-size: 1.2rem;
+    }
+    .tool-description {
+        font-size: 0.9rem;
+    }
+    .tool-workspace-wrapper {
+        padding: 1.5rem;
+    }
+    .back-to-grid-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .upload-area-container {
+        padding: 1rem;
+    }
+    .upload-box {
+        padding: 2rem 1rem;
+    }
+    .select-pdf-file-btn {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+    .convert-action-btn {
+        font-size: 1rem;
+        padding: 0.8rem 2rem;
+    }
+    .pdf-to-word-layout {
+        flex-direction: column; /* Stack on small screens */
+        align-items: center;
+    }
+    .right-sidebar {
+        padding-top: 1rem; /* Adjust padding for stacked layout */
+    }
+    .sidebar-convert-btn {
+        margin: 1.5rem auto 0 auto !important; /* Center button when stacked */
+    }
+    .result-message-box, .progress-info-block, .loading-animation-container {
+        max-width: 100%; /* Use full width on small screens */
+        padding: 1rem;
+    }
+    .download-btn, .reset-conversion-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
 }
