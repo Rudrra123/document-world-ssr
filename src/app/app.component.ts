@@ -1,76 +1,62 @@
-// app.component.ts (or your header component if separate)
-
 import { Component, HostListener } from '@angular/core';
 
 @Component({
-  selector: 'app-root', // or 'app-header' if it's a separate component
-  templateUrl: './app.component.html', // or './header.component.html'
-  styleUrls: ['./app.component.css'] // or './header.component.css'
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
-export class AppComponent { // or HeaderComponent
-  title = 'DocumentWorld';
+export class AppComponent {
+  showMobileMenu = false;
+  showPdfTools = false;
+  showCompressTools = false;
 
-  // State for PDF Tools dropdown
-  showPdfTools: boolean = false;
-  private isPdfToolsHovering: boolean = false; // Renamed for clarity
-
-  // State for Compress Tools dropdown
-  showCompressTools: boolean = false;
-  private isCompressToolsHovering: boolean = false; // New property
-
-  // Mouse hover events for PDF Tools dropdown
-  onDropdownHover(isOver: boolean): void {
-    this.isPdfToolsHovering = isOver;
-    if (isOver) {
-      this.showPdfTools = true;
-    } else {
-      setTimeout(() => {
-        if (!this.isPdfToolsHovering) {
-          this.showPdfTools = false;
-        }
-      }, 150);
+  // Track window size changes
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    if (window.innerWidth > 768) {
+      this.showMobileMenu = false;
     }
   }
 
-  // Mouse hover events for Compress Tools dropdown (New method)
-  onCompressDropdownHover(isOver: boolean): void {
-    this.isCompressToolsHovering = isOver;
-    if (isOver) {
-      this.showCompressTools = true;
-    } else {
-      setTimeout(() => {
-        if (!this.isCompressToolsHovering) {
-          this.showCompressTools = false;
-        }
-      }, 150);
+  // Mobile menu toggle
+  toggleMobileMenu(): void {
+    this.showMobileMenu = !this.showMobileMenu;
+  }
+
+  // Close mobile menu when a link is clicked
+  closeMobileMenu(): void {
+    this.showMobileMenu = false;
+  }
+
+  // Handle dropdown hover (for desktop)
+  onDropdownHover(show: boolean, type?: string): void {
+    if (window.innerWidth > 768) { // Only for desktop
+      if (type === 'pdf') {
+        this.showPdfTools = show;
+        if (show) this.showCompressTools = false;
+      } else if (type === 'compress') {
+        this.showCompressTools = show;
+        if (show) this.showPdfTools = false;
+      }
     }
   }
 
-  // Closes the PDF Tools dropdown (existing)
-  hidePdfTools(): void {
-    this.showPdfTools = false;
-    this.isPdfToolsHovering = false;
+  // Toggle dropdown (for mobile)
+  toggleDropdown(type: string): void {
+    if (window.innerWidth <= 768) { // Only for mobile
+      if (type === 'pdf') {
+        this.showPdfTools = !this.showPdfTools;
+        if (this.showPdfTools) this.showCompressTools = false;
+      } else if (type === 'compress') {
+        this.showCompressTools = !this.showCompressTools;
+        if (this.showCompressTools) this.showPdfTools = false;
+      }
+    }
   }
 
-  // Closes the Compress Tools dropdown (New method)
+  // Hide compress tools dropdown
   hideCompressTools(): void {
     this.showCompressTools = false;
-    this.isCompressToolsHovering = false;
-  }
-
-  // Closes ALL dropdowns when clicking outside
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event): void {
-    const targetElement = event.target as HTMLElement;
-    // Check if the click is outside the entire dropdown container for PDF Tools
-    if (this.showPdfTools && !targetElement.closest('.dropdown')) {
-      this.showPdfTools = false;
-      this.isPdfToolsHovering = false;
-    }
-    // Check if the click is outside the entire dropdown container for Compress Tools
-    if (this.showCompressTools && !targetElement.closest('.dropdown')) { // Using .dropdown class which is common
-      this.showCompressTools = false;
-      this.isCompressToolsHovering = false;
-    }
+    this.closeMobileMenu();
   }
 }
