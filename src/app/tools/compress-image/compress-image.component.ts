@@ -1,7 +1,9 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-compress-image',
@@ -30,7 +32,7 @@ export class CompressImageComponent implements OnInit {
   // Convert
   targetFormat: string = 'jpeg';
 
-  //Crop Image
+  // Crop
   cropX: number = 0;
   cropY: number = 0;
   cropWidth: number = 0;
@@ -38,17 +40,31 @@ export class CompressImageComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private sanitizer: DomSanitizer
-  ) { }
+    private sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    private router: Router 
+  ) {}
 
+  
   ngOnInit(): void {
-    this.activeTool = null;
+    // 🔥 Activate tool from route param
+    this.route.paramMap.subscribe(params => {
+      const toolParam = params.get('tool');
+      this.activeTool = toolParam || 'compress-image'; // Default to 'compress-image'
+    });
   }
 
-  setActiveTool(tool: string | null): void {
-    this.activeTool = tool;
-    this.resetSingleFile();
+setActiveTool(tool: string | null): void {
+  this.activeTool = tool;
+  this.resetSingleFile();
+
+  if (tool) {
+    this.router.navigate(['/compress-image', tool]);
+  } else {
+    this.router.navigate(['/compress-image']); // clean URL
   }
+}
+
 
   preventDefaults(event: Event): void {
     event.preventDefault();
@@ -177,7 +193,7 @@ export class CompressImageComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('file', this.selectedFile);
-    formData.append('target_format', this.targetFormat); // 🔥 Make sure FastAPI expects 'format'
+    formData.append('target_format', this.targetFormat);
 
     this.http.post(`${environment.apiUrl}/convert-image`, formData, {
       reportProgress: true,

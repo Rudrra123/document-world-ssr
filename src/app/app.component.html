@@ -15,16 +15,11 @@
           📄 PDF Tools <i class="fas fa-caret-down"></i>
         </a>
         <div class="dropdown-content" [class.show]="showPdfTools">
-          <!-- <a routerLink="/jpg-to-pdf" routerLinkActive="active" (click)="hidePdfTools()">🖼️ JPG/PNG to PDF</a> -->
           <a [routerLink]="['/pdf-tools', 'jpg-to-pdf']" (click)="hidePdfTools()">🖼️ JPG/PNG to PDF</a>
-
           <a [routerLink]="['/pdf-tools', 'pdf-to-word']" (click)="hidePdfTools()">📄 PDF to Word</a>
-          <!-- <a routerLink="/pdf-to-word" routerLinkActive="active" (click)="hidePdfTools()">📄 PDF to Word</a> -->
-          <!-- <a routerLink="/word-to-pdf" routerLinkActive="active" (click)="hidePdfTools()">📄 Word to PDF</a> -->
           <a [routerLink]="['/pdf-tools', 'word-to-pdf']" (click)="hidePdfTools()">📄 Word to PDF</a>
           <a [routerLink]="['/pdf-tools', 'merge-images-to-pdf']" (click)="hidePdfTools()">🎴 Merge Images PDF</a>
           <a [routerLink]="['/pdf-tools', 'compress-pdf']" (click)="hidePdfTools()">🗜️ Compress PDF</a>
-            <!-- <a routerLink="/compress-pdf" routerLinkActive="active" (click)="hidePdfTools()">🗜️ Compress PDF</a> -->
         </div>
       </div>
 
@@ -35,13 +30,13 @@
           🖼️ Image Tools <i class="fas fa-caret-down"></i>
         </a>
         <div class="dropdown-content" [class.show]="showCompressTools">
-          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'compress' }" (click)="hideCompressTools()">🗜️
+          <a [routerLink]="['/compress-image', 'compress-image']" (click)="hideCompressTools()">🗜️
             Compress Image</a>
-          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'resize' }" (click)="hideCompressTools()">📐
+          <a [routerLink]="['/compress-image', 'resize-image']" (click)="hideCompressTools()">📐
             Resize Image</a>
-          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'convert' }" (click)="hideCompressTools()">🔄
+          <a [routerLink]="['/compress-image', 'convert-image']"(click)="hideCompressTools()">🔄
             Convert Image</a>
-          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'crop' }" (click)="hideCompressTools()">✂️ Crop
+          <a [routerLink]="['/compress-image', 'crop-image']"  (click)="hideCompressTools()">✂️ Crop
             Image</a>
         </div>
       </div>

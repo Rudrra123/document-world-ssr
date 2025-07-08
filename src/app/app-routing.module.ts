@@ -17,8 +17,13 @@ const routes: Routes = [
   { path: 'pdf-tools/:tool', component: PdfToolsComponent },
   { path: 'pdf-tools', component: PdfToolsComponent },
 
+  // ✅ PDF Tools with optional parameter to switch tools like /pdf-tools/compress-pdf
+ { path: 'compress-image/:tool', component: CompressImageComponent },
+{ path: 'compress-image', component: CompressImageComponent },
+
+
+
   // ✅ Other direct tools
-  { path: 'compress-image', component: CompressImageComponent },
   { path: 'edit-pdf', component: EditPdfComponent },
   { path: 'word-to-pdf', component: WordToPdfComponent },
   { path: 'merge-images-to-pdf', component: MergeImagesToPdfComponent },
