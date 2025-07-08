@@ -1,68 +1,53 @@
-import { Component, ElementRef, ViewChild, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-compress-image',
   templateUrl: './compress-image.component.html',
   styleUrls: ['./compress-image.component.css']
 })
-export class CompressImageComponent implements OnInit, OnDestroy {
+export class CompressImageComponent implements OnInit {
   @ViewChild('fileInputSingle') fileInput!: ElementRef<HTMLInputElement>;
 
+  activeTool: string | null = null;
   selectedFile: File | null = null;
   previewUrl: SafeUrl = '';
   blobUrl: string = '';
-  compressedUrl: SafeUrl = '';
   downloadUrl: string = '';
+  downloadedFileName = '';
   originalSize = 0;
   compressedSize = 0;
   progress = 0;
   errorMessage: string | null = null;
   isDragging: boolean = false;
 
-  mode: 'compress' | 'resize' | 'convert' | 'crop' = 'compress';
-
+  // Resize
   resizeWidth: number | null = null;
   resizeHeight: number | null = null;
-  convertFormat: string = '';
-  cropX: number | null = null;
-  cropY: number | null = null;
-  cropWidth: number | null = null;
-  cropHeight: number | null = null;
-  downloadedFileName = '';
 
-  private routeSubscription: Subscription | undefined;
+  // Convert
+  targetFormat: string = 'jpeg';
+
+  //Crop Image
+  cropX: number = 0;
+  cropY: number = 0;
+  cropWidth: number = 0;
+  cropHeight: number = 0;
 
   constructor(
     private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private route: ActivatedRoute
-  ) {}
+    private sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.queryParams.subscribe(params => {
-      const modeParam = params['mode'];
-      if (modeParam && ['compress', 'resize', 'convert', 'crop'].includes(modeParam)) {
-        this.mode = modeParam as any;
-      } else {
-        this.mode = 'compress';
-      }
-    });
+    this.activeTool = null;
   }
 
-  ngOnDestroy(): void {
-    this.revokeObjectUrls();
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-  }
-
-  triggerFileInput(): void {
-    this.fileInput.nativeElement.click();
+  setActiveTool(tool: string | null): void {
+    this.activeTool = tool;
+    this.resetSingleFile();
   }
 
   preventDefaults(event: Event): void {
@@ -84,13 +69,11 @@ export class CompressImageComponent implements OnInit, OnDestroy {
     this.preventDefaults(event);
     this.isDragging = false;
     const file = event.dataTransfer?.files?.[0];
-    if (file) {
-      if (file.type.startsWith('image/')) {
-        this.setFile(file);
-      } else {
-        this.errorMessage = 'Please drop an image file (JPG, PNG, WebP, GIF, BMP).';
-        this.resetSingleFile();
-      }
+    if (file?.type.startsWith('image/')) {
+      this.setFile(file);
+    } else {
+      this.errorMessage = 'Please drop a valid image file.';
+      this.resetSingleFile();
     }
   }
 
@@ -102,104 +85,66 @@ export class CompressImageComponent implements OnInit, OnDestroy {
 
   setFile(file: File): void {
     this.revokeObjectUrls();
-
     this.selectedFile = file;
     this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
     this.originalSize = file.size;
-
-    this.compressedUrl = '';
-    this.blobUrl = '';
     this.downloadUrl = '';
     this.compressedSize = 0;
     this.progress = 0;
-    this.downloadedFileName = '';
     this.errorMessage = null;
-
-    // Reset input fields
-    this.resizeWidth = null;
-    this.resizeHeight = null;
-    this.convertFormat = '';
-    this.cropX = null;
-    this.cropY = null;
-    this.cropWidth = null;
-    this.cropHeight = null;
-  }
-
-  getButtonLabel(): string {
-    switch (this.mode) {
-      case 'resize': return '📐 Resize Image';
-      case 'convert': return '🔄 Convert Image';
-      case 'crop': return '✂️ Crop Image';
-      default: return '⚡ Compress Image';
-    }
-  }
-
-  getResultLabel(): string {
-    switch (this.mode) {
-      case 'compress': return 'Optimized Size';
-      case 'resize': return 'Resized Size';
-      case 'convert': return 'Converted Size';
-      case 'crop': return 'Cropped Size';
-      default: return 'Processed Size';
-    }
   }
 
   uploadSingleFile(): void {
     if (!this.selectedFile) {
-      this.errorMessage = 'Please select an image first.';
+      this.errorMessage = 'Please select an image.';
       return;
     }
-
-    this.errorMessage = null;
-    this.compressedUrl = '';
-    this.compressedSize = 0;
-    this.blobUrl = '';
-    this.downloadUrl = '';
-    this.downloadedFileName = '';
-    this.progress = 0;
 
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    let endpoint = '';
-
-    if (this.mode === 'resize') {
-      if (!this.resizeWidth || !this.resizeHeight) {
-        this.errorMessage = 'Resize Error: Please enter valid width and height.';
-        return;
+    this.http.post(`${environment.apiUrl}/compress-image`, formData, {
+      reportProgress: true,
+      observe: 'events',
+      responseType: 'blob'
+    }).subscribe(event => {
+      if (event.type === HttpEventType.UploadProgress && event.total) {
+        this.progress = Math.round((event.loaded / event.total) * 100);
       }
-      formData.append('width', this.resizeWidth.toString());
-      formData.append('height', this.resizeHeight.toString());
-      endpoint = `${environment.apiUrl}/resize-image`;
 
-    } else if (this.mode === 'convert') {
-      if (!this.convertFormat) {
-        this.errorMessage = 'Convert Error: Please select a target format.';
-        return;
+      if (event.type === HttpEventType.Response) {
+        const blob = new Blob([event.body!], { type: 'image/jpeg' });
+        this.revokeObjectUrls();
+        this.blobUrl = URL.createObjectURL(blob);
+        this.downloadUrl = this.blobUrl;
+        this.compressedSize = blob.size;
+        this.downloadedFileName = 'compressed_' + this.selectedFile!.name;
+        this.progress = 100;
       }
-      formData.append('target_format', this.convertFormat);
-      endpoint = `${environment.apiUrl}/convert-image`;
+    }, error => {
+      console.error('Compression error:', error);
+      this.errorMessage = 'Compression failed.';
+      this.progress = 0;
+    });
+  }
 
-    } else if (this.mode === 'crop') {
-      if (
-        this.cropX === null || this.cropY === null ||
-        this.cropWidth === null || this.cropHeight === null ||
-        this.cropWidth <= 0 || this.cropHeight <= 0
-      ) {
-        this.errorMessage = 'Crop Error: Please enter valid crop values.';
-        return;
-      }
-      formData.append('x', this.cropX.toString());
-      formData.append('y', this.cropY.toString());
-      formData.append('width', this.cropWidth.toString());
-      formData.append('height', this.cropHeight.toString());
-      endpoint = `${environment.apiUrl}/crop-image`;
-
-    } else {
-      endpoint = `${environment.apiUrl}/compress-image`;
+  uploadResizeFile(): void {
+    if (!this.selectedFile) {
+      this.errorMessage = 'Please select an image.';
+      return;
     }
 
-    this.http.post(endpoint, formData, {
+    if (!this.resizeWidth || !this.resizeHeight) {
+      this.errorMessage = 'Please enter valid width and height.';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+    formData.append('width', this.resizeWidth.toString());
+    formData.append('height', this.resizeHeight.toString());
+
+    this.http.post(`${environment.apiUrl}/resize-image`, formData, {
       reportProgress: true,
       observe: 'events',
       responseType: 'blob'
@@ -210,90 +155,121 @@ export class CompressImageComponent implements OnInit, OnDestroy {
 
       if (event.type === HttpEventType.Response) {
         const blob = new Blob([event.body!], { type: event.body?.type || 'image/jpeg' });
-        this.compressedSize = blob.size;
-
-        this.revokeObjectUrls(true);
-
+        this.revokeObjectUrls();
         this.blobUrl = URL.createObjectURL(blob);
-        this.compressedUrl = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
         this.downloadUrl = this.blobUrl;
-        this.downloadedFileName = this.getDownloadName(blob.type);
+        this.compressedSize = blob.size;
+        this.downloadedFileName = 'resized_' + this.selectedFile!.name;
         this.progress = 100;
       }
     }, error => {
-      console.error('Image processing failed:', error);
+      console.error('Resize error:', error);
+      this.errorMessage = 'Resize failed.';
       this.progress = 0;
-      this.errorMessage = `Processing failed: ${error.message || 'An unknown error occurred.'}`;
     });
   }
 
-  getDownloadName(outputMimeType: string): string {
-    const originalName = this.selectedFile?.name || 'image';
-    const lastDotIndex = originalName.lastIndexOf('.');
-    let baseName = originalName.substring(0, lastDotIndex > -1 ? lastDotIndex : originalName.length);
-
-    let suffix = '';
-    let outputExtension = '';
-
-    switch (this.mode) {
-      case 'compress': suffix = 'compressed'; break;
-      case 'resize': suffix = 'resized'; break;
-      case 'convert': suffix = 'converted'; break;
-      case 'crop': suffix = 'cropped'; break;
-      default: suffix = 'processed';
+  uploadConvertFile(): void {
+    if (!this.selectedFile || !this.targetFormat) {
+      this.errorMessage = 'Select an image and target format.';
+      return;
     }
 
-    if (outputMimeType.includes('jpeg')) outputExtension = 'jpeg';
-    else if (outputMimeType.includes('png')) outputExtension = 'png';
-    else if (outputMimeType.includes('webp')) outputExtension = 'webp';
-    else if (outputMimeType.includes('gif')) outputExtension = 'gif';
-    else if (outputMimeType.includes('bmp')) outputExtension = 'bmp';
-    else outputExtension = originalName.substring(lastDotIndex + 1).toLowerCase() || 'jpeg';
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+    formData.append('target_format', this.targetFormat); // 🔥 Make sure FastAPI expects 'format'
 
-    if (this.mode === 'convert' && this.convertFormat) {
-      outputExtension = this.convertFormat.toLowerCase();
+    this.http.post(`${environment.apiUrl}/convert-image`, formData, {
+      reportProgress: true,
+      observe: 'events',
+      responseType: 'blob'
+    }).subscribe(event => {
+      if (event.type === HttpEventType.UploadProgress && event.total) {
+        this.progress = Math.round((event.loaded / event.total) * 100);
+      }
+
+      if (event.type === HttpEventType.Response) {
+        const blob = new Blob([event.body!], { type: `image/${this.targetFormat}` });
+        this.revokeObjectUrls();
+        this.blobUrl = URL.createObjectURL(blob);
+        this.downloadUrl = this.blobUrl;
+        this.compressedSize = blob.size;
+        this.downloadedFileName = `converted_${this.selectedFile!.name.split('.')[0]}.${this.targetFormat}`;
+        this.progress = 100;
+      }
+    }, error => {
+      console.error('Conversion error:', error);
+      this.errorMessage = error?.error?.detail || 'Conversion failed.';
+      this.progress = 0;
+    });
+  }
+
+  uploadCropFile(): void {
+    if (!this.selectedFile || !this.cropWidth || !this.cropHeight) {
+      this.errorMessage = 'Please provide image and crop dimensions.';
+      return;
     }
 
-    return `${baseName}_${suffix}.${outputExtension}`;
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+    formData.append('x', String(this.cropX));
+    formData.append('y', String(this.cropY));
+    formData.append('width', String(this.cropWidth));
+    formData.append('height', String(this.cropHeight));
+
+    this.http.post(`${environment.apiUrl}/crop-image`, formData, {
+      reportProgress: true,
+      observe: 'events',
+      responseType: 'blob'
+    }).subscribe(event => {
+      if (event.type === HttpEventType.UploadProgress && event.total) {
+        this.progress = Math.round((event.loaded / event.total) * 100);
+      }
+
+      if (event.type === HttpEventType.Response) {
+        const blob = new Blob([event.body!], { type: this.selectedFile!.type });
+        this.revokeObjectUrls();
+        this.blobUrl = URL.createObjectURL(blob);
+        this.downloadUrl = this.blobUrl;
+        this.compressedSize = blob.size;
+        this.downloadedFileName = `cropped_${this.selectedFile!.name}`;
+        this.progress = 100;
+      }
+    }, error => {
+      console.error('Crop error:', error);
+      this.errorMessage = error?.error?.detail || 'Cropping failed.';
+      this.progress = 0;
+    });
   }
 
   resetSingleFile(): void {
-    this.revokeObjectUrls();
-
     this.selectedFile = null;
     this.previewUrl = '';
-    this.blobUrl = '';
-    this.compressedUrl = '';
     this.downloadUrl = '';
+    this.blobUrl = '';
     this.progress = 0;
     this.compressedSize = 0;
     this.originalSize = 0;
     this.downloadedFileName = '';
     this.errorMessage = null;
-
     this.resizeWidth = null;
     this.resizeHeight = null;
-    this.convertFormat = '';
-    this.cropX = null;
-    this.cropY = null;
-    this.cropWidth = null;
-    this.cropHeight = null;
+    this.targetFormat = 'jpeg';
 
-    if (this.fileInput && this.fileInput.nativeElement) {
+    if (this.fileInput?.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
+
+    this.revokeObjectUrls();
   }
 
-  private revokeObjectUrls(onlyCompressed: boolean = false): void {
-    if (!onlyCompressed && this.previewUrl) {
-      const urlString = (this.previewUrl as any).changingThisBreaksApplicationSecurity;
-      if (urlString && urlString.startsWith('blob:')) {
-        URL.revokeObjectURL(urlString);
-      }
+  revokeObjectUrls(): void {
+    if (this.blobUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.blobUrl);
     }
 
-    if (this.blobUrl && this.blobUrl.startsWith('blob:')) {
-      URL.revokeObjectURL(this.blobUrl);
+    if (this.previewUrl && (this.previewUrl as any).changingThisBreaksApplicationSecurity) {
+      URL.revokeObjectURL((this.previewUrl as any).changingThisBreaksApplicationSecurity);
     }
   }
 }

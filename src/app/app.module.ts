@@ -17,6 +17,7 @@ import { PdfToolsComponent } from './tools/pdf-tools/pdf-tools.component';
 import { ProtectPdfPasswordComponent } from './tools/protect-pdf-password/protect-pdf-password.component';
 import { RemovePdfPasswordComponent } from './tools/remove-pdf-password/remove-pdf-password.component';
 import { WordEditComponent } from './tools/word-edit/word-edit.component'; // âœ… Import
+import { CompressPdfComponent } from './tools/compress-pdf/compress-pdf.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { WordEditComponent } from './tools/word-edit/word-edit.component'; // âœ
     WordToPdfComponent,
     CompressImageComponent,
     MergeImagesToPdfComponent,
-    PdfToolsComponent
+    PdfToolsComponent,
+    CompressPdfComponent 
   ],
   imports: [
     BrowserModule,

@@ -1,12 +1,15 @@
 <div class="docuflow-container">
 
     <header class="main-header" *ngIf="!activeTool">
-        <h1>🚀 DocuFlow</h1>
-        <p>Every tool you need to work with your files, all in one place.</p>
+        <div class="header-content">
+            <h1>🚀 DocuFlow</h1>
+            <p class="subtitle">Every tool you need to work with your files, all in one place.</p>
+        </div>
+        <div class="header-decoration"></div>
     </header>
 
     <main class="tool-grid-container" *ngIf="!activeTool">
-        <div class="tool-card" (click)="setActiveTool('jpg-to-pdf')">
+        <div class="tool-card" (click)="setActiveTool('jpg-to-pdf')" [routerLink]="['/pdf-tools', 'jpg-to-pdf']">
             <div class="tool-icon-wrapper bg-orange">
                 <i class="fas fa-image"></i>
             </div>
@@ -14,7 +17,7 @@
             <p class="tool-description">Convert JPG, PNG, and other images to a PDF file.</p>
         </div>
 
-        <div class="tool-card" (click)="setActiveTool('pdf-to-word')">
+        <div class="tool-card" (click)="setActiveTool('pdf-to-word')" [routerLink]="['/pdf-tools', 'pdf-to-word']">
             <div class="tool-icon-wrapper bg-blue">
                 <i class="fas fa-file-word"></i>
             </div>
@@ -22,7 +25,7 @@
             <p class="tool-description">Easily convert your PDF files into editable DOCX documents.</p>
         </div>
 
-        <div class="tool-card" (click)="setActiveTool('word-to-pdf')">
+        <div class="tool-card" (click)="setActiveTool('word-to-pdf')" [routerLink]="['/pdf-tools', 'word-to-pdf']">
             <div class="tool-icon-wrapper bg-red">
                 <i class="fas fa-file-pdf"></i>
             </div>
@@ -30,17 +33,25 @@
             <p class="tool-description">Make DOC and DOCX files easy to read by converting them to PDF.</p>
         </div>
 
-        <div class="tool-card" (click)="setActiveTool('merge-images-to-pdf')">
+        <div class="tool-card" (click)="setActiveTool('merge-images-to-pdf')"
+            [routerLink]="['/pdf-tools', 'merge-images-to-pdf']">
             <div class="tool-icon-wrapper bg-green">
                 <i class="fas fa-images"></i>
             </div>
             <h3 class="tool-title">Merge Images to PDF</h3>
             <p class="tool-description">Combine multiple images into a single, organized PDF.</p>
         </div>
+        <div class="tool-card" (click)="setActiveTool('compress-pdf')" [routerLink]="['/pdf-tools', 'compress-pdf']">
+            <div class="tool-icon-wrapper bg-purple">
+                <i class="fas fa-compress"></i>
+            </div>
+            <h3 class="tool-title">Compress PDF</h3>
+            <p class="tool-description">Shrink your PDF file size quickly and efficiently.</p>
+        </div>
     </main>
 
     <div class="tool-workspace-wrapper" *ngIf="activeTool">
-        <button class="back-to-grid-btn" (click)="setActiveTool(null)">
+        <button class="back-to-grid-btn" [routerLink]="['/pdf-tools']" [fragment]="null" (click)="setActiveTool(null)">
             <i class="fas fa-arrow-left"></i> All Tools
         </button>
 
@@ -51,8 +62,11 @@
             <div class="pdf-to-word-layout">
                 <div class="main-upload-content">
                     <div class="upload-area-container">
-                        <label class="upload-box main-select-button" [class.drag-over]="isDragging" (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
-                            <input #fileInputSingle type="file" [accept]="getFileAcceptTypes('pdf-to-word')" (change)="onFileSelectedSingle($event)" hidden />
+                        <label class="upload-box main-select-button" [class.drag-over]="isDragging"
+                            (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)"
+                            (drop)="onDropSingle($event)">
+                            <input #fileInputSingle type="file" [accept]="getFileAcceptTypes('pdf-to-word')"
+                                (change)="onFileSelectedSingle($event)" hidden />
                             <div class="upload-content" (click)="fileInputSingle.click()">
                                 <ng-container *ngIf="!selectedFileSingle">
                                     <button type="button" class="select-pdf-file-btn">
@@ -70,9 +84,11 @@
                                             <i class="fas fa-file-pdf file-pdf-icon"></i>
                                         </div>
                                         <span class="file-name-display">{{ selectedFileSingle.name }}</span>
-                                        <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }} KB)</span>
+                                        <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1)
+                                            }} KB)</span>
                                     </div>
-                                    <button type="button" class="remove-file-preview-btn" (click)="$event.stopPropagation(); resetSingleFile()">
+                                    <button type="button" class="remove-file-preview-btn"
+                                        (click)="$event.stopPropagation(); resetSingleFile()">
                                         <i class="fas fa-times-circle"></i>
                                     </button>
                                 </ng-container>
@@ -82,21 +98,26 @@
                 </div>
 
                 <div class="right-sidebar">
-                    <button class="convert-action-btn sidebar-convert-btn" [disabled]="!selectedFileSingle || progress > 0" (click)="uploadSingleFile()">
-                        <ng-container *ngIf="progress === 0">Convert to WORD <i class="fas fa-arrow-right"></i></ng-container>
-                        <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%</ng-container>
+                    <button class="convert-action-btn sidebar-convert-btn"
+                        [disabled]="!selectedFileSingle || progress > 0" (click)="uploadSingleFile()">
+                        <ng-container *ngIf="progress === 0">Convert to WORD <i
+                                class="fas fa-arrow-right"></i></ng-container>
+                        <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Converting... {{
+                            progress }}%</ng-container>
                     </button>
                 </div>
             </div>
 
             <div class="global-status-area" *ngIf="progress > 0 || downloadUrl || errorMessage">
-                <div class="loading-animation-container" *ngIf="progress === 0 && selectedFileSingle && !downloadUrl && !errorMessage">
+                <div class="loading-animation-container"
+                    *ngIf="progress === 0 && selectedFileSingle && !downloadUrl && !errorMessage">
                     <p class="loading-text">Converting PDF to WORD...</p>
                     <div class="spinner"></div>
                 </div>
                 <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
                     <p class="upload-progress-text">Uploading file 1 of 1</p>
-                    <p class="upload-file-details">{{ selectedFileSingle?.name }} ({{ (selectedFileSingle?.size / 1024).toFixed(1) }} KB)</p>
+                    <p class="upload-file-details">{{ selectedFileSingle?.name }} ({{ (selectedFileSingle?.size /
+                        1024).toFixed(1) }} KB)</p>
                     <p class="upload-speed-time-left">Time left 0 SECONDS - Upload speed 519 KB/S</p>
                     <div class="progress-indicator upload-progress-bar">
                         <div class="progress-bar-fill" [style.width.%]="progress"></div>
@@ -107,7 +128,8 @@
 
                 <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
                     <p>✅ Conversion successful! Your Word file is ready.</p>
-                    <a [href]="downloadUrl" download="converted.docx" class="download-btn"><i class="fas fa-download"></i> Download Word</a>
+                    <a [href]="downloadUrl" download="converted.docx" class="download-btn"><i
+                            class="fas fa-download"></i> Download Word</a>
                     <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Start New</button>
                 </div>
                 <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
@@ -119,11 +141,15 @@
 
         <section id="jpg-to-pdf-section" class="tool-section" [class.active]="activeTool === 'jpg-to-pdf'">
             <h2 class="tool-section-title"><i class="fas fa-image"></i> Convert JPG/PNG to PDF</h2>
-            <p class="tool-description-section">Easily transform your image files into a single, high-quality PDF document.</p>
+            <p class="tool-description-section">Easily transform your image files into a single, high-quality PDF
+                document.</p>
             <div class="main-upload-content">
                 <div class="upload-area-container">
-                    <label class="upload-box main-select-button" [class.drag-over]="isDragging" (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
-                        <input #fileInputSingle type="file" [accept]="getFileAcceptTypes('jpg-to-pdf')" (change)="onFileSelectedSingle($event)" hidden />
+                    <label class="upload-box main-select-button" [class.drag-over]="isDragging"
+                        (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)"
+                        (drop)="onDropSingle($event)">
+                        <input #fileInputSingle type="file" [accept]="getFileAcceptTypes('jpg-to-pdf')"
+                            (change)="onFileSelectedSingle($event)" hidden />
                         <div class="upload-content" (click)="fileInputSingle.click()">
                             <ng-container *ngIf="!selectedFileSingle">
                                 <button type="button" class="select-pdf-file-btn">
@@ -141,9 +167,11 @@
                                         <i class="fas fa-file-image file-pdf-icon"></i>
                                     </div>
                                     <span class="file-name-display">{{ selectedFileSingle.name }}</span>
-                                    <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }} KB)</span>
+                                    <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }}
+                                        KB)</span>
                                 </div>
-                                <button type="button" class="remove-file-preview-btn" (click)="$event.stopPropagation(); resetSingleFile()">
+                                <button type="button" class="remove-file-preview-btn"
+                                    (click)="$event.stopPropagation(); resetSingleFile()">
                                     <i class="fas fa-times-circle"></i>
                                 </button>
                             </ng-container>
@@ -151,18 +179,22 @@
                     </label>
                 </div>
             </div>
-            <button class="convert-action-btn" [disabled]="!selectedFileSingle || progress > 0" (click)="uploadSingleFile()">
+            <button class="convert-action-btn" [disabled]="!selectedFileSingle || progress > 0"
+                (click)="uploadSingleFile()">
                 <ng-container *ngIf="progress === 0"><i class="fas fa-magic"></i> Convert to PDF</ng-container>
-                <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%</ng-container>
+                <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Converting... {{ progress
+                    }}%</ng-container>
             </button>
             <div class="global-status-area" *ngIf="progress > 0 || downloadUrl || errorMessage">
-                <div class="loading-animation-container" *ngIf="progress === 0 && selectedFileSingle && !downloadUrl && !errorMessage">
+                <div class="loading-animation-container"
+                    *ngIf="progress === 0 && selectedFileSingle && !downloadUrl && !errorMessage">
                     <p class="loading-text">Converting JPG/PNG to PDF...</p>
                     <div class="spinner"></div>
                 </div>
                 <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
                     <p class="upload-progress-text">Uploading file 1 of 1</p>
-                    <p class="upload-file-details">{{ selectedFileSingle?.name }} ({{ (selectedFileSingle?.size / 1024).toFixed(1) }} KB)</p>
+                    <p class="upload-file-details">{{ selectedFileSingle?.name }} ({{ (selectedFileSingle?.size /
+                        1024).toFixed(1) }} KB)</p>
                     <p class="upload-speed-time-left">Time left 0 SECONDS - Upload speed 519 KB/S</p>
                     <div class="progress-indicator upload-progress-bar">
                         <div class="progress-bar-fill" [style.width.%]="progress"></div>
@@ -172,7 +204,8 @@
                 </div>
                 <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
                     <p>✅ Conversion successful! Your PDF is ready.</p>
-                    <a [href]="downloadUrl" download="converted.pdf" class="download-btn"><i class="fas fa-download"></i> Download PDF</a>
+                    <a [href]="downloadUrl" download="converted.pdf" class="download-btn"><i
+                            class="fas fa-download"></i> Download PDF</a>
                     <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Start New</button>
                 </div>
                 <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
@@ -184,11 +217,15 @@
 
         <section id="word-to-pdf-section" class="tool-section" [class.active]="activeTool === 'word-to-pdf'">
             <h2 class="tool-section-title"><i class="fas fa-file-word"></i> Convert Word to PDF</h2>
-            <p class="tool-description-section">Convert your Word documents into high-quality, universally compatible PDF files.</p>
+            <p class="tool-description-section">Convert your Word documents into high-quality, universally compatible
+                PDF files.</p>
             <div class="main-upload-content">
                 <div class="upload-area-container">
-                    <label class="upload-box main-select-button" [class.drag-over]="isDragging" (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
-                        <input #fileInputSingle type="file" [accept]="getFileAcceptTypes('word-to-pdf')" (change)="onFileSelectedSingle($event)" hidden />
+                    <label class="upload-box main-select-button" [class.drag-over]="isDragging"
+                        (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)"
+                        (drop)="onDropSingle($event)">
+                        <input #fileInputSingle type="file" [accept]="getFileAcceptTypes('word-to-pdf')"
+                            (change)="onFileSelectedSingle($event)" hidden />
                         <div class="upload-content" (click)="fileInputSingle.click()">
                             <ng-container *ngIf="!selectedFileSingle">
                                 <button type="button" class="select-pdf-file-btn">
@@ -206,9 +243,11 @@
                                         <i class="fas fa-file-word file-pdf-icon"></i>
                                     </div>
                                     <span class="file-name-display">{{ selectedFileSingle.name }}</span>
-                                    <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }} KB)</span>
+                                    <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }}
+                                        KB)</span>
                                 </div>
-                                <button type="button" class="remove-file-preview-btn" (click)="$event.stopPropagation(); resetSingleFile()">
+                                <button type="button" class="remove-file-preview-btn"
+                                    (click)="$event.stopPropagation(); resetSingleFile()">
                                     <i class="fas fa-times-circle"></i>
                                 </button>
                             </ng-container>
@@ -216,18 +255,22 @@
                     </label>
                 </div>
             </div>
-            <button class="convert-action-btn" [disabled]="!selectedFileSingle || progress > 0" (click)="uploadSingleFile()">
+            <button class="convert-action-btn" [disabled]="!selectedFileSingle || progress > 0"
+                (click)="uploadSingleFile()">
                 <ng-container *ngIf="progress === 0"><i class="fas fa-file-pdf"></i> Convert to PDF</ng-container>
-                <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%</ng-container>
+                <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Converting... {{ progress
+                    }}%</ng-container>
             </button>
             <div class="global-status-area" *ngIf="progress > 0 || downloadUrl || errorMessage">
-                <div class="loading-animation-container" *ngIf="progress === 0 && selectedFileSingle && !downloadUrl && !errorMessage">
+                <div class="loading-animation-container"
+                    *ngIf="progress === 0 && selectedFileSingle && !downloadUrl && !errorMessage">
                     <p class="loading-text">Converting Word to PDF...</p>
                     <div class="spinner"></div>
                 </div>
                 <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
                     <p class="upload-progress-text">Uploading file 1 of 1</p>
-                    <p class="upload-file-details">{{ selectedFileSingle?.name }} ({{ (selectedFileSingle?.size / 1024).toFixed(1) }} KB)</p>
+                    <p class="upload-file-details">{{ selectedFileSingle?.name }} ({{ (selectedFileSingle?.size /
+                        1024).toFixed(1) }} KB)</p>
                     <p class="upload-speed-time-left">Time left 0 SECONDS - Upload speed 519 KB/S</p>
                     <div class="progress-indicator upload-progress-bar">
                         <div class="progress-bar-fill" [style.width.%]="progress"></div>
@@ -237,7 +280,8 @@
                 </div>
                 <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
                     <p>✅ Conversion successful! Your PDF is ready.</p>
-                    <a [href]="downloadUrl" download="converted.pdf" class="download-btn"><i class="fas fa-download"></i> Download PDF</a>
+                    <a [href]="downloadUrl" download="converted.pdf" class="download-btn"><i
+                            class="fas fa-download"></i> Download PDF</a>
                     <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Start New</button>
                 </div>
                 <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
@@ -247,13 +291,17 @@
             </div>
         </section>
 
-        <section id="merge-images-to-pdf-section" class="tool-section" [class.active]="activeTool === 'merge-images-to-pdf'">
+        <section id="merge-images-to-pdf-section" class="tool-section"
+            [class.active]="activeTool === 'merge-images-to-pdf'">
             <h2 class="tool-section-title"><i class="fas fa-images"></i> Merge Images to PDF</h2>
             <p class="tool-description-section">Combine multiple images into a single, organized PDF document.</p>
             <div class="main-upload-content">
                 <div class="upload-area-container">
-                    <label class="upload-box main-select-button multi-image-upload" [class.drag-over]="isDragging" [class.has-files]="selectedFilesMultiple.length > 0" (dragover)="preventDefaults($event)" (dragleave)="onDragLeaveMultiple($event)" (drop)="onFilesDroppedMultiple($event)">
-                        <input #fileInputMultiple type="file" accept="image/*" multiple (change)="onFilesSelectedMultiple($event)" hidden />
+                    <label class="upload-box main-select-button multi-image-upload" [class.drag-over]="isDragging"
+                        [class.has-files]="selectedFilesMultiple.length > 0" (dragover)="preventDefaults($event)"
+                        (dragleave)="onDragLeaveMultiple($event)" (drop)="onFilesDroppedMultiple($event)">
+                        <input #fileInputMultiple type="file" accept="image/*" multiple
+                            (change)="onFilesSelectedMultiple($event)" hidden />
                         <div class="upload-content" (click)="fileInputMultiple.click()">
                             <ng-container *ngIf="!selectedFilesMultiple.length">
                                 <button type="button" class="select-pdf-file-btn">
@@ -270,9 +318,11 @@
                                     <div class="file-thumbnail">
                                         <i class="fas fa-images file-pdf-icon"></i>
                                     </div>
-                                    <span class="file-name-display">{{ selectedFilesMultiple.length }} image(s) selected</span>
-                                    </div>
-                                <button type="button" class="remove-file-preview-btn" (click)="$event.stopPropagation(); resetMultipleFiles()">
+                                    <span class="file-name-display">{{ selectedFilesMultiple.length }} image(s)
+                                        selected</span>
+                                </div>
+                                <button type="button" class="remove-file-preview-btn"
+                                    (click)="$event.stopPropagation(); resetMultipleFiles()">
                                     <i class="fas fa-times-circle"></i>
                                 </button>
                             </ng-container>
@@ -280,12 +330,15 @@
                     </label>
                 </div>
             </div>
-            <button class="convert-action-btn" [disabled]="!selectedFilesMultiple.length || progress > 0" (click)="uploadMultipleFiles()">
+            <button class="convert-action-btn" [disabled]="!selectedFilesMultiple.length || progress > 0"
+                (click)="uploadMultipleFiles()">
                 <ng-container *ngIf="progress === 0"><i class="fas fa-images"></i> Merge to PDF</ng-container>
-                <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Merging... {{ progress }}%</ng-container>
+                <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Merging... {{ progress
+                    }}%</ng-container>
             </button>
             <div class="global-status-area" *ngIf="progress > 0 || downloadUrl || errorMessage">
-                <div class="loading-animation-container" *ngIf="progress === 0 && selectedFilesMultiple.length > 0 && !downloadUrl && !errorMessage">
+                <div class="loading-animation-container"
+                    *ngIf="progress === 0 && selectedFilesMultiple.length > 0 && !downloadUrl && !errorMessage">
                     <p class="loading-text">Merging Images to PDF...</p>
                     <div class="spinner"></div>
                 </div>
@@ -301,7 +354,8 @@
                 </div>
                 <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
                     <p>✅ Merge successful! Your PDF is ready.</p>
-                    <a [href]="downloadUrl" download="merged_images.pdf" class="download-btn"><i class="fas fa-download"></i> Download PDF</a>
+                    <a [href]="downloadUrl" download="merged_images.pdf" class="download-btn"><i
+                            class="fas fa-download"></i> Download PDF</a>
                     <button type="button" class="reset-conversion-btn" (click)="resetMultipleFiles()">Start New</button>
                 </div>
                 <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
@@ -310,5 +364,84 @@
                 </div>
             </div>
         </section>
+
+        <section id="compress-pdf-section" class="tool-section" [class.active]="activeTool === 'compress-pdf'">
+            <h2 class="tool-section-title"><i class="fas fa-compress"></i> Compress PDF</h2>
+            <p class="tool-description-section">Reduce the file size of your PDF without compromising much quality.</p>
+
+            <div class="main-upload-content">
+                <div class="upload-area-container">
+                    <label class="upload-box main-select-button" [class.drag-over]="isDragging"
+                        (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)"
+                        (drop)="onDropSingle($event)">
+                        <input #fileInputSingle type="file" accept="application/pdf"
+                            (change)="onFileSelectedSingle($event)" hidden />
+                        <div class="upload-content" (click)="fileInputSingle.click()">
+                            <ng-container *ngIf="!selectedFileSingle">
+                                <button type="button" class="select-pdf-file-btn">Select PDF file</button>
+                                <div class="select-pdf-file-btn-alt-icons">
+                                    <button class="small-icon-btn"><i class="fas fa-cloud-upload-alt"></i></button>
+                                    <button class="small-icon-btn"><i class="fas fa-exchange-alt"></i></button>
+                                </div>
+                                <span class="or-drop-text">or drop PDF here</span>
+                            </ng-container>
+                            <ng-container *ngIf="selectedFileSingle">
+                                <div class="file-preview-area">
+                                    <div class="file-thumbnail"><i class="fas fa-file-pdf file-pdf-icon"></i></div>
+                                    <span class="file-name-display">{{ selectedFileSingle.name }}</span>
+                                    <span class="file-size-display">({{ (selectedFileSingle.size / 1024).toFixed(1) }}
+                                        KB)</span>
+                                </div>
+                                <button type="button" class="remove-file-preview-btn"
+                                    (click)="$event.stopPropagation(); resetSingleFile()">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                            </ng-container>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button class="convert-action-btn" [disabled]="!selectedFileSingle || progress > 0"
+                (click)="compressPdfFile()">
+                <ng-container *ngIf="progress === 0"><i class="fas fa-compress-alt"></i> Compress PDF</ng-container>
+                <ng-container *ngIf="progress > 0"><i class="fas fa-spinner fa-spin"></i> Compressing... {{ progress
+                    }}%</ng-container>
+            </button>
+
+            <div class="global-status-area" *ngIf="progress > 0 || downloadUrl || errorMessage">
+                <div class="loading-animation-container"
+                    *ngIf="progress === 0 && selectedFileSingle && !downloadUrl && !errorMessage">
+                    <p class="loading-text">Compressing PDF...</p>
+                    <div class="spinner"></div>
+                </div>
+
+                <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
+                    <p class="upload-progress-text">Uploading...</p>
+                    <p class="upload-file-details">{{ selectedFileSingle?.name }} ({{ (selectedFileSingle?.size /
+                        1024).toFixed(1) }} KB)</p>
+                    <div class="progress-indicator upload-progress-bar">
+                        <div class="progress-bar-fill" [style.width.%]="progress"></div>
+                    </div>
+                    <p class="upload-percentage-text">{{ progress }}%</p>
+                </div>
+
+                <div class="result-message-box success" *ngIf="downloadUrl && !errorMessage">
+                    <p>✅ Compression successful!</p>
+                    <p><strong>Size reduced:</strong> {{ originalSizeKB }} KB → {{ compressedSizeKB }} KB</p>
+
+                    <a [href]="downloadUrl" download="compressed.pdf" class="download-btn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Start New</button>
+                </div>
+
+                <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
+                    <p>❌ Error: {{ errorMessage }}</p>
+                    <button type="button" class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>

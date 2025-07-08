@@ -36,21 +36,49 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
   freeUsesRemainingMerge: number = this.freeUsesLimitMerge; // Will always be high
   freeFileLimitMerge: number = 20; // Max files for free users per merge
 
+  originalSizeKB: number = 0;
+  compressedSizeKB: number = 0;
 
   constructor(private http: HttpClient, private route: ActivatedRoute) { }
+  
+ngOnInit(): void {
+  this.route.paramMap.subscribe(params => {
+    const toolParam = params.get('tool');
 
-  ngOnInit(): void {
-    // Optionally, you can read from route params if you want deep linking to specific tools
-    this.route.paramMap.subscribe(params => {
-      const toolParam = params.get('tool');
-      if (toolParam && ['jpg-to-pdf', 'pdf-to-word', 'word-to-pdf', 'merge-images-to-pdf'].includes(toolParam)) {
-        this.setActiveTool(toolParam);
-      } else {
-        this.setActiveTool(null); // Show grid if no valid tool in URL or initially
-      }
-    });
-    this.checkUserStatusMerge();
-  }
+    if (toolParam) {
+      this.setActiveTool(toolParam);
+
+      // Scroll into view if section ID exists
+      setTimeout(() => {
+        const section = document.getElementById(`${toolParam}-section`);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          section.classList.add('highlight-section');
+          setTimeout(() => section.classList.remove('highlight-section'), 3000);
+        }
+      }, 300);
+    } else {
+      this.setActiveTool(null); // show full tool grid
+    }
+  });
+
+  this.checkUserStatusMerge();
+}
+
+
+
+  // ngOnInit(): void {
+  //   // Optionally, you can read from route params if you want deep linking to specific tools
+  //   this.route.paramMap.subscribe(params => {
+  //     const toolParam = params.get('tool');
+  //     if (toolParam && ['jpg-to-pdf', 'pdf-to-word', 'word-to-pdf', 'merge-images-to-pdf','compress-pdf'].includes(toolParam)) {
+  //       this.setActiveTool(toolParam);
+  //     } else {
+  //       this.setActiveTool(null); // Show grid if no valid tool in URL or initially
+  //     }
+  //   });
+  //   this.checkUserStatusMerge();
+  // }
 
   ngOnDestroy(): void {
     if (this.uploadSubscription) {
@@ -447,6 +475,51 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
     });
   }
 
+  compressPdfFile(): void {
+    if (!this.selectedFileSingle) {
+      this.errorMessage = 'Please select a PDF file to compress.';
+      return;
+    }
+
+    this.resetCommonStatesForNewUpload();
+    this.progress = 1;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFileSingle);
+
+    const originalSizeBytes = this.selectedFileSingle.size;
+
+    this.uploadSubscription = this.http.post(`${environment.apiUrl}/compress-pdf`, formData, {
+      responseType: 'blob',
+      reportProgress: true,
+      observe: 'events'
+    }).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.progress = Math.round((event.loaded / event.total) * 100);
+        }
+
+        if (event.type === HttpEventType.Response) {
+          const blob = new Blob([event.body!], { type: 'application/pdf' });
+          this.downloadUrl = URL.createObjectURL(blob);
+          this.downloadFileName = 'compressed.pdf';
+
+          const compressedSizeBytes = blob.size;
+          this.originalSizeKB = +(originalSizeBytes / 1024).toFixed(1);
+          this.compressedSizeKB = +(compressedSizeBytes / 1024).toFixed(1);
+
+          this.progress = 0;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.handleUploadError(error);
+        this.resetCommonStatesForNewUpload();
+      },
+      complete: () => this.unsubscribeUpload()
+    });
+  }
+
+  
   /**
    * Triggers the download of the file (for both single and multiple conversions).
    * This method is called when the "Download PDF" or "Download Word" button is clicked.
@@ -549,4 +622,6 @@ export class PdfToolsComponent implements OnInit, OnDestroy {
 
     return false;
   }
+
+  
 }

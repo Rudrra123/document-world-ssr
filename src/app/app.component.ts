@@ -54,9 +54,16 @@ export class AppComponent {
     }
   }
 
-  // Hide compress tools dropdown
-  hideCompressTools(): void {
-    this.showCompressTools = false;
-    this.closeMobileMenu();
-  }
+// Hide compress tools dropdown
+hideCompressTools(): void {
+  this.showCompressTools = false;
+  this.closeMobileMenu();
+}
+
+// Hide pdf tools dropdown
+hidePdfTools(): void {
+  this.showPdfTools = false;
+  this.closeMobileMenu();
+}
+
 }
