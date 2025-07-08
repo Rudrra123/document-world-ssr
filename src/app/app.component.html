@@ -8,44 +8,42 @@
     </div>
 
     <nav class="nav-links" [class.mobile-show]="showMobileMenu">
-  <!-- PDF Tools Dropdown -->
-  <div class="dropdown" 
-       (mouseenter)="onDropdownHover(true, 'pdf')" 
-       (mouseleave)="onDropdownHover(false, 'pdf')"
-       (click)="toggleDropdown('pdf')">
-    <a class="dropbtn" routerLink="/pdf-tools" routerLinkActive="active">
-      📄 PDF Tools <i class="fas fa-caret-down"></i>
-    </a>
-    <div class="dropdown-content" [class.show]="showPdfTools">
-      <a routerLink="/pdf-tools/merge" routerLinkActive="active">Merge PDF</a>
-      <a routerLink="/pdf-tools/split" routerLinkActive="active">Split PDF</a>
-      <a routerLink="/pdf-tools/compress" routerLinkActive="active">Compress PDF</a>
-      <a routerLink="/pdf-tools/convert" routerLinkActive="active">Convert PDF</a>
-    </div>
-  </div>
+      <!-- Dropdown Trigger on Hover (Desktop) / Click (Mobile) -->
+      <div class="dropdown" 
+           (mouseenter)="onDropdownHover(true, 'pdf')" 
+           (mouseleave)="onDropdownHover(false, 'pdf')"
+           (click)="toggleDropdown('pdf')">
+        <a class="dropbtn" routerLink="/pdf-tools" routerLinkActive="active">
+          📄 PDF Tools <i class="fas fa-caret-down"></i>
+        </a>
+        <div class="dropdown-content" [class.show]="showPdfTools">
+          <a routerLink="/jpg-to-pdf" routerLinkActive="active">JPG/PNG to PDF</a>
+          <a routerLink="/pdf-to-word" routerLinkActive="active">PDF to Word</a>
+          <a routerLink="/word-to-pdf" routerLinkActive="active">Word to PDF</a>
+          <a routerLink="/merge-images-to-pdf" routerLinkActive="active">Merge Images PDF</a>
+        </div>
+      </div>
 
-  <!-- Compress Tools Dropdown -->
-  <div class="dropdown"
-       (mouseenter)="onDropdownHover(true, 'compress')"
-       (mouseleave)="onDropdownHover(false, 'compress')"
-       (click)="toggleDropdown('compress')">
-    <a class="dropbtn" routerLinkActive="active">
-      🗜️ Compress Tools <i class="fas fa-caret-down"></i>
-    </a>
-    <div class="dropdown-content" [class.show]="showCompressTools">
-      <a routerLink="/compress-image/compress" routerLinkActive="active" (click)="hideCompressTools()">Compress Image</a>
-      <a routerLink="/compress-image/resize" routerLinkActive="active" (click)="hideCompressTools()">Resize Image</a>
-      <a routerLink="/compress-image/convert" routerLinkActive="active" (click)="hideCompressTools()">Convert Image</a>
-      <a routerLink="/compress-image/crop" routerLinkActive="active" (click)="hideCompressTools()">Crop Image</a>
-    </div>
-  </div>
-  
-  <!-- Other Links -->
-  <a routerLink="/edit-pdf" routerLinkActive="active" (click)="closeMobileMenu()">✏️ Edit PDF</a>
-  <a routerLink="/protect-pdf-password" routerLinkActive="active" (click)="closeMobileMenu()">🔒 Protect PDF</a>
-  <a routerLink="/remove-pdf-password" routerLinkActive="active" (click)="closeMobileMenu()">🔓 Remove PDF</a>
-  <a routerLink="/edit-word" routerLinkActive="active" (click)="closeMobileMenu()">📝 Edit Word</a>
-</nav>
+      <div class="dropdown"
+           (mouseenter)="onDropdownHover(true, 'compress')"
+           (mouseleave)="onDropdownHover(false, 'compress')"
+           (click)="toggleDropdown('compress')">
+        <a class="dropbtn" routerLinkActive="active">
+          🗜️ Compress Tools <i class="fas fa-caret-down"></i>
+        </a>
+        <div class="dropdown-content" [class.show]="showCompressTools">
+          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'compress' }" routerLinkActive="active" (click)="hideCompressTools()">Compress Image</a>
+          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'resize' }" routerLinkActive="active" (click)="hideCompressTools()">Resize Image</a>
+          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'convert' }" routerLinkActive="active" (click)="hideCompressTools()">Convert Image</a>
+          <a [routerLink]="['/compress-image']" [queryParams]="{ mode: 'crop' }" routerLinkActive="active" (click)="hideCompressTools()">Crop Image</a>
+        </div>
+      </div>
+      
+      <a routerLink="/edit-pdf" routerLinkActive="active" (click)="closeMobileMenu()">✏️ Edit PDF</a>
+      <a routerLink="/protect-pdf-password" routerLinkActive="active" (click)="closeMobileMenu()">🔒 Protect PDF</a>
+      <a routerLink="/remove-pdf-password" routerLinkActive="active" (click)="closeMobileMenu()">🔓 Remove PDF</a>
+      <a routerLink="/edit-word" routerLinkActive="active" (click)="closeMobileMenu()">📝 Edit Word</a>
+    </nav>
   </div>
 </header>
 <router-outlet></router-outlet>
