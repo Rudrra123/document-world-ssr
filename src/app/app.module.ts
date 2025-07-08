@@ -9,7 +9,6 @@ import { JpgToPdfComponent } from './tools/jpg-to-pdf/jpg-to-pdf.component';
 import { EditPdfComponent } from './tools/edit-pdf/edit-pdf.component';
 import { PdfToWordComponent } from './tools/pdf-to-word/pdf-to-word.component';
 import { WordToPdfComponent } from './tools/word-to-pdf/word-to-pdf.component';
-import { CompressImageComponent } from './tools/compress-image/compress-image.component';
 import { MergeImagesToPdfComponent } from './tools/merge-images-to-pdf/merge-images-to-pdf.component';
 import { PdfToolsComponent } from './tools/pdf-tools/pdf-tools.component';
 
@@ -18,6 +17,7 @@ import { ProtectPdfPasswordComponent } from './tools/protect-pdf-password/protec
 import { RemovePdfPasswordComponent } from './tools/remove-pdf-password/remove-pdf-password.component';
 import { WordEditComponent } from './tools/word-edit/word-edit.component'; // ✅ Import
 import { CompressPdfComponent } from './tools/compress-pdf/compress-pdf.component';
+import { ImageToolsComponent } from './tools/image-tools/image-tools.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,7 @@ import { CompressPdfComponent } from './tools/compress-pdf/compress-pdf.componen
     EditPdfComponent,
     PdfToWordComponent,
     WordToPdfComponent,
-    CompressImageComponent,
+    ImageToolsComponent,
     MergeImagesToPdfComponent,
     PdfToolsComponent,
     CompressPdfComponent 

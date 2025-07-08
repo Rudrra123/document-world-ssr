@@ -26,17 +26,17 @@
       <!-- 🖼️ Compress Tools Dropdown -->
       <div class="dropdown" (mouseenter)="onDropdownHover(true, 'compress')"
         (mouseleave)="onDropdownHover(false, 'compress')" (click)="toggleDropdown('compress')">
-        <a class="dropbtn"  routerLink="/compress-image"  routerLinkActive="active">
+        <a class="dropbtn"  routerLink="/image-tools"  routerLinkActive="active">
           🖼️ Image Tools <i class="fas fa-caret-down"></i>
         </a>
         <div class="dropdown-content" [class.show]="showCompressTools">
-          <a [routerLink]="['/compress-image', 'compress-image']" (click)="hideCompressTools()">🗜️
+          <a [routerLink]="['/image-tools', 'compress-image']" (click)="hideCompressTools()">🗜️
             Compress Image</a>
-          <a [routerLink]="['/compress-image', 'resize-image']" (click)="hideCompressTools()">📐
+          <a [routerLink]="['/image-tools', 'resize-image']" (click)="hideCompressTools()">📐
             Resize Image</a>
-          <a [routerLink]="['/compress-image', 'convert-image']"(click)="hideCompressTools()">🔄
+          <a [routerLink]="['/image-tools', 'convert-image']"(click)="hideCompressTools()">🔄
             Convert Image</a>
-          <a [routerLink]="['/compress-image', 'crop-image']"  (click)="hideCompressTools()">✂️ Crop
+          <a [routerLink]="['/image-tools', 'crop-image']"  (click)="hideCompressTools()">✂️ Crop
             Image</a>
         </div>
       </div>

@@ -1,0 +1,364 @@
+<div class="docuflow-container">
+  <!-- Main Header -->
+  <header class="main-header" *ngIf="!activeTool">
+    <div class="header-content">
+      <h1>🚀 Image Tools</h1>
+      <p class="subtitle">Every tool you need to work with your images, all in one place.</p>
+    </div>
+    <div class="header-decoration"></div>
+  </header>
+
+  <main class="tool-grid-container" *ngIf="!activeTool">
+    <div class="tool-card" (click)="setActiveTool('compress-image')">
+      <div class="tool-icon-wrapper bg-purple">
+        <i class="fas fa-compress"></i>
+      </div>
+      <h3 class="tool-title">Compress Image</h3>
+      <p class="tool-description">Reduce the file size of your JPG, PNG, and other images.</p>
+    </div>
+
+    <div class="tool-card" (click)="setActiveTool('resize-image')">
+      <div class="tool-icon-wrapper bg-blue">
+        <i class="fas fa-expand-arrows-alt"></i>
+      </div>
+      <h3 class="tool-title">Resize Image</h3>
+      <p class="tool-description">Change the dimensions of your image (width and height).</p>
+    </div>
+
+    <div class="tool-card" (click)="setActiveTool('convert-image')">
+      <div class="tool-icon-wrapper bg-green">
+        <i class="fas fa-exchange-alt"></i>
+      </div>
+      <h3 class="tool-title">Convert Image</h3>
+      <p class="tool-description">Change image format to PNG, JPG, or more.</p>
+    </div>
+
+    <div class="tool-card" (click)="setActiveTool('crop-image')">
+      <div class="tool-icon-wrapper bg-orange">
+        <i class="fas fa-crop-alt"></i>
+      </div>
+      <h3 class="tool-title">Crop Image</h3>
+      <p class="tool-description">Trim your image to a selected region or custom area.</p>
+    </div>
+
+
+  </main>
+
+  <!-- Compress Image Section -->
+  <div class="tool-workspace-wrapper" *ngIf="activeTool">
+
+    <button class="back-to-grid-btn" [routerLink]="['/image-tools']" [fragment]="null" (click)="setActiveTool(null)">
+      <i class="fas fa-arrow-left"></i> ← Back to Tools
+    </button>
+
+    <section id="compress-image-section" class="tool-section" [class.active]="activeTool === 'compress-image'">
+      <h2 class="tool-section-title"><i class="fas fa-compress"></i> Compress Image</h2>
+      <div class="main-upload-content">
+        <div class="upload-area-container">
+          <label class="upload-box main-select-button" [class.drag-over]="isDragging"
+            (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
+            <input #fileInputSingle type="file" accept="image/*" (change)="onFileSelectedSingle($event)" hidden />
+            <div class="upload-content" (click)="fileInputSingle.click()">
+              <ng-container *ngIf="!selectedFile">
+                <button type="button" class="select-pdf-file-btn">Select Image File</button>
+                <div class="select-pdf-file-btn-alt-icons">
+                  <button class="small-icon-btn"><i class="fas fa-cloud-upload-alt"></i></button>
+                  <button class="small-icon-btn"><i class="fas fa-exchange-alt"></i></button>
+                </div>
+                <span class="or-drop-text">or drop image here</span>
+              </ng-container>
+              <ng-container *ngIf="selectedFile">
+                <div class="file-preview-area">
+                  <div class="file-thumbnail">
+                    <i class="fas fa-file-image file-image-icon"></i>
+                  </div>
+                  <span class="file-name-display">{{ selectedFile.name }}</span>
+                  <span class="file-size-display">({{ (selectedFile.size / 1024).toFixed(1) }} KB)</span>
+                </div>
+                <button type="button" class="remove-file-preview-btn"
+                  (click)="$event.stopPropagation(); resetSingleFile()">
+                  <i class="fas fa-times-circle"></i>
+                </button>
+              </ng-container>
+            </div>
+          </label>
+        </div>
+
+        <button class="convert-action-btn" [disabled]="!selectedFile || progress > 0" (click)="uploadSingleFile()">
+          <ng-container *ngIf="progress === 0">
+            <i class="fas fa-play-circle"></i> Compress Now
+          </ng-container>
+          <ng-container *ngIf="progress > 0">
+            <i class="fas fa-spinner fa-spin"></i> Compressing... {{ progress }}%
+          </ng-container>
+        </button>
+
+        <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
+          <p class="upload-percentage-text">{{ progress }}%</p>
+          <div class="progress-indicator upload-progress-bar">
+            <div class="progress-bar-fill" [style.width.%]="progress"></div>
+          </div>
+          <p class="upload-status-text">Processing...</p>
+        </div>
+
+        <div class="result-message-box success" *ngIf="downloadUrl">
+          <p>✅ Compressed successfully!</p>
+          <p><strong>Original:</strong> {{ (originalSize / 1024).toFixed(1) }} KB → <strong>Compressed:</strong> {{
+            (compressedSize / 1024).toFixed(1) }} KB</p>
+          <a [href]="downloadUrl" [download]="downloadedFileName" class="download-btn">
+            <i class="fas fa-download"></i> Download Compressed Image
+          </a>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">
+            <i class="fas fa-redo-alt"></i> Compress Another
+          </button>
+        </div>
+
+        <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
+          <p>❌ Error: {{ errorMessage }}</p>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="resize-image-section" class="tool-section" [class.active]="activeTool === 'resize-image'">
+      <h2 class="tool-section-title"><i class="fas fa-expand-arrows-alt"></i> Resize Image</h2>
+      <div class="main-upload-content">
+        <div class="upload-area-container">
+          <label class="upload-box main-select-button" [class.drag-over]="isDragging"
+            (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
+
+            <input #fileInputSingle type="file" accept="image/*" (change)="onFileSelectedSingle($event)" hidden />
+
+            <div class="upload-content" (click)="fileInputSingle.click()">
+              <ng-container *ngIf="!selectedFile">
+                <button type="button" class="select-pdf-file-btn">Select Image File</button>
+                <div class="select-pdf-file-btn-alt-icons">
+                  <button class="small-icon-btn"><i class="fas fa-cloud-upload-alt"></i></button>
+                  <button class="small-icon-btn"><i class="fas fa-exchange-alt"></i></button>
+                </div>
+                <span class="or-drop-text">or drop image here</span>
+              </ng-container>
+
+              <ng-container *ngIf="selectedFile">
+                <div class="file-preview-area">
+                  <div class="file-thumbnail">
+                    <i class="fas fa-file-image file-image-icon"></i>
+                  </div>
+                  <span class="file-name-display">{{ selectedFile.name }}</span>
+                  <span class="file-size-display">({{ (selectedFile.size / 1024).toFixed(1) }} KB)</span>
+                </div>
+                <button type="button" class="remove-file-preview-btn"
+                  (click)="$event.stopPropagation(); resetSingleFile()">
+                  <i class="fas fa-times-circle"></i>
+                </button>
+              </ng-container>
+            </div>
+          </label>
+        </div>
+
+        <div class="resize-input-fields">
+          <label for="widthInput">Width (px)</label>
+          <input id="widthInput" type="number" placeholder="e.g. 1280" [(ngModel)]="resizeWidth" />
+          <label for="heightInput">Height (px)</label>
+          <input id="heightInput" type="number" placeholder="e.g. 720" [(ngModel)]="resizeHeight" />
+        </div>
+
+        <button class="convert-action-btn" [disabled]="!selectedFile || !resizeWidth || !resizeHeight || progress > 0"
+          (click)="uploadResizeFile()">
+          <ng-container *ngIf="progress === 0">
+            <i class="fas fa-play-circle"></i> Resize Image
+          </ng-container>
+          <ng-container *ngIf="progress > 0">
+            <i class="fas fa-spinner fa-spin"></i> Resizing... {{ progress }}%
+          </ng-container>
+        </button>
+
+        <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
+          <p class="upload-percentage-text">{{ progress }}%</p>
+          <div class="progress-indicator upload-progress-bar">
+            <div class="progress-bar-fill" [style.width.%]="progress"></div>
+          </div>
+          <p class="upload-status-text">Processing...</p>
+        </div>
+
+        <div class="result-message-box success" *ngIf="downloadUrl">
+          <p>✅ Resized successfully!</p>
+          <p><strong>New Dimensions:</strong> {{ resizeWidth }}x{{ resizeHeight }} px</p>
+          <a [href]="downloadUrl" [download]="downloadedFileName" class="download-btn">
+            <i class="fas fa-download"></i> Download Resized Image
+          </a>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">
+            <i class="fas fa-redo-alt"></i> Resize Another
+          </button>
+        </div>
+
+        <div class="result-message-box error" *ngIf="errorMessage && !downloadUrl">
+          <p>❌ Error: {{ errorMessage }}</p>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="convert-image-section" class="tool-section" [class.active]="activeTool === 'convert-image'">
+      <h2 class="tool-section-title">
+        <i class="fas fa-exchange-alt"></i> Convert Image
+      </h2>
+
+      <div class="main-upload-content convert-image-section">
+        <!-- Upload Box -->
+        <div class="upload-area-container">
+          <label class="upload-box main-select-button shadow" [class.drag-over]="isDragging"
+            (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
+            <input #fileInputSingle type="file" accept="image/*" (change)="onFileSelectedSingle($event)" hidden />
+            <div class="upload-content" (click)="fileInputSingle.click()">
+              <ng-container *ngIf="!selectedFile">
+                <button type="button" class="select-pdf-file-btn primary-btn">📁 Choose Image</button>
+                <span class="or-drop-text mt-1">or drag & drop here</span>
+              </ng-container>
+
+              <ng-container *ngIf="selectedFile">
+                <div class="file-preview-area mt-2">
+                  <i class="fas fa-file-image file-image-icon"></i>
+                  <span class="file-name-display">{{ selectedFile.name }}</span>
+                  <button type="button" class="remove-file-preview-btn ml-2"
+                    (click)="$event.stopPropagation(); resetSingleFile()">
+                    <i class="fas fa-times-circle"></i>
+                  </button>
+                </div>
+              </ng-container>
+            </div>
+          </label>
+        </div>
+
+        <!-- Format Dropdown -->
+        <div class="input-group format-select-box">
+          <label for="formatSelect">Convert To Format:</label>
+          <select id="formatSelect" [(ngModel)]="targetFormat" class="format-dropdown">
+            <option value="jpeg">JPEG</option>
+            <option value="png">PNG</option>
+            <option value="webp">WebP</option>
+            <option value="tiff">TIFF</option>
+            <option value="bmp">BMP</option>
+          </select>
+        </div>
+
+        <!-- Convert Button -->
+        <button class="convert-action-btn full-width primary-btn"
+          [disabled]="!selectedFile || !targetFormat || progress > 0" (click)="uploadConvertFile()">
+          <ng-container *ngIf="progress === 0">
+            <i class="fas fa-play-circle"></i> Convert Image
+          </ng-container>
+          <ng-container *ngIf="progress > 0">
+            <i class="fas fa-spinner fa-spin"></i> Converting... {{ progress }}%
+          </ng-container>
+        </button>
+
+        <!-- Progress -->
+        <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
+          <p class="upload-percentage-text">{{ progress }}%</p>
+          <div class="progress-indicator upload-progress-bar">
+            <div class="progress-bar-fill" [style.width.%]="progress"></div>
+          </div>
+          <p class="upload-status-text">Processing...</p>
+        </div>
+
+        <!-- Success -->
+        <div class="result-message-box success mt-3" *ngIf="downloadUrl">
+          <p>✅ Converted successfully!</p>
+          <a [href]="downloadUrl" [download]="downloadedFileName" class="download-btn">
+            <i class="fas fa-download"></i> Download Converted Image
+          </a>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">
+            <i class="fas fa-redo-alt"></i> Convert Another
+          </button>
+        </div>
+
+        <!-- Error -->
+        <div class="result-message-box error mt-3" *ngIf="errorMessage && !downloadUrl">
+          <p>❌ Error: {{ errorMessage }}</p>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="crop-image-section" class="tool-section" [class.active]="activeTool === 'crop-image'">
+      <h2 class="tool-section-title"><i class="fas fa-crop-alt"></i> Crop Image</h2>
+
+      <div class="main-upload-content crop-image-section">
+        <!-- Upload Box -->
+        <div class="upload-area-container">
+          <label class="upload-box main-select-button shadow" [class.drag-over]="isDragging"
+            (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
+            <input #fileInputSingle type="file" accept="image/*" (change)="onFileSelectedSingle($event)" hidden />
+            <div class="upload-content" (click)="fileInputSingle.click()">
+              <ng-container *ngIf="!selectedFile">
+                <button type="button" class="select-pdf-file-btn primary-btn">📁 Choose Image</button>
+                <span class="or-drop-text mt-1">or drag & drop here</span>
+              </ng-container>
+
+              <ng-container *ngIf="selectedFile">
+                <div class="file-preview-area mt-2">
+                  <i class="fas fa-file-image file-image-icon"></i>
+                  <span class="file-name-display">{{ selectedFile.name }}</span>
+                  <button type="button" class="remove-file-preview-btn ml-2"
+                    (click)="$event.stopPropagation(); resetSingleFile()">
+                    <i class="fas fa-times-circle"></i>
+                  </button>
+                </div>
+              </ng-container>
+            </div>
+          </label>
+        </div>
+
+        <!-- Crop Fields -->
+        <div class="resize-input-fields">
+          <label>X (Start)</label>
+          <input type="number" placeholder="e.g. 50" [(ngModel)]="cropX" />
+          <label>Y (Start)</label>
+          <input type="number" placeholder="e.g. 50" [(ngModel)]="cropY" />
+          <label>Width</label>
+          <input type="number" placeholder="e.g. 300" [(ngModel)]="cropWidth" />
+          <label>Height</label>
+          <input type="number" placeholder="e.g. 300" [(ngModel)]="cropHeight" />
+        </div>
+
+        <!-- Crop Button -->
+        <button class="convert-action-btn full-width primary-btn"
+          [disabled]="!selectedFile || !cropWidth || !cropHeight || progress > 0" (click)="uploadCropFile()">
+          <ng-container *ngIf="progress === 0">
+            <i class="fas fa-crop"></i> Crop Image
+          </ng-container>
+          <ng-container *ngIf="progress > 0">
+            <i class="fas fa-spinner fa-spin"></i> Cropping... {{ progress }}%
+          </ng-container>
+        </button>
+
+        <!-- Progress -->
+        <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
+          <p class="upload-percentage-text">{{ progress }}%</p>
+          <div class="progress-indicator upload-progress-bar">
+            <div class="progress-bar-fill" [style.width.%]="progress"></div>
+          </div>
+          <p class="upload-status-text">Processing...</p>
+        </div>
+
+        <!-- Success -->
+        <div class="result-message-box success mt-3" *ngIf="downloadUrl">
+          <p>✅ Cropped successfully!</p>
+          <a [href]="downloadUrl" [download]="downloadedFileName" class="download-btn">
+            <i class="fas fa-download"></i> Download Cropped Image
+          </a>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">
+            <i class="fas fa-redo-alt"></i> Crop Another
+          </button>
+        </div>
+
+        <!-- Error -->
+        <div class="result-message-box error mt-3" *ngIf="errorMessage && !downloadUrl">
+          <p>❌ Error: {{ errorMessage }}</p>
+          <button class="reset-conversion-btn" (click)="resetSingleFile()">Try Again</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

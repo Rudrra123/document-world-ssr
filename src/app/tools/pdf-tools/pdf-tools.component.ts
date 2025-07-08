@@ -66,20 +66,6 @@ ngOnInit(): void {
 }
 
 
-
-  // ngOnInit(): void {
-  //   // Optionally, you can read from route params if you want deep linking to specific tools
-  //   this.route.paramMap.subscribe(params => {
-  //     const toolParam = params.get('tool');
-  //     if (toolParam && ['jpg-to-pdf', 'pdf-to-word', 'word-to-pdf', 'merge-images-to-pdf','compress-pdf'].includes(toolParam)) {
-  //       this.setActiveTool(toolParam);
-  //     } else {
-  //       this.setActiveTool(null); // Show grid if no valid tool in URL or initially
-  //     }
-  //   });
-  //   this.checkUserStatusMerge();
-  // }
-
   ngOnDestroy(): void {
     if (this.uploadSubscription) {
       this.uploadSubscription.unsubscribe();
