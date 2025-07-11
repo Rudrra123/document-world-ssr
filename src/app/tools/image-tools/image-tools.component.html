@@ -11,7 +11,7 @@
   <main class="tool-grid-container" *ngIf="!activeTool">
     <div class="tool-card" (click)="setActiveTool('compress-image')">
       <div class="tool-icon-wrapper bg-purple">
-        <i class="fas fa-compress"></i>
+        <i class="fa-duotone fa-solid fa-minimize"></i>
       </div>
       <h3 class="tool-title">Compress Image</h3>
       <p class="tool-description">Reduce the file size of your JPG, PNG, and other images.</p>
@@ -41,14 +41,18 @@
       <p class="tool-description">Trim your image to a selected region or custom area.</p>
     </div>
 
-
+    <div class="tool-card" (click)="setActiveTool('image-to-text')">
+  <div class="tool-icon-wrapper bg-info"> <i class="fas fa-ocr"></i> </div>
+  <h3 class="tool-title">Image to Text (OCR)</h3>
+  <p class="tool-description">Extract text from images using Optical Character Recognition.</p>
+</div>
   </main>
 
   <!-- Compress Image Section -->
   <div class="tool-workspace-wrapper" *ngIf="activeTool">
 
     <button class="back-to-grid-btn" [routerLink]="['/image-tools']" [fragment]="null" (click)="setActiveTool(null)">
-      <i class="fas fa-arrow-left"></i> ← Back to Tools
+      <i class="fas fa-arrow-left"></i> Back to Tools
     </button>
 
     <section id="compress-image-section" class="tool-section" [class.active]="activeTool === 'compress-image'">
@@ -243,7 +247,7 @@
         </div>
 
         <!-- Convert Button -->
-        <button class="convert-action-btn full-width primary-btn"
+        <button class="convert-action-btn full-width primary-btn" *ngIf="progress < 100"
           [disabled]="!selectedFile || !targetFormat || progress > 0" (click)="uploadConvertFile()">
           <ng-container *ngIf="progress === 0">
             <i class="fas fa-play-circle"></i> Convert Image
@@ -253,6 +257,7 @@
           </ng-container>
         </button>
 
+
         <!-- Progress -->
         <div class="progress-info-block" *ngIf="progress > 0 && progress < 100">
           <p class="upload-percentage-text">{{ progress }}%</p>
@@ -261,6 +266,7 @@
           </div>
           <p class="upload-status-text">Processing...</p>
         </div>
+
 
         <!-- Success -->
         <div class="result-message-box success mt-3" *ngIf="downloadUrl">
@@ -322,13 +328,14 @@
           <input type="number" placeholder="e.g. 300" [(ngModel)]="cropHeight" />
         </div>
 
+
         <!-- Crop Button -->
-        <button class="convert-action-btn full-width primary-btn"
+        <button *ngIf="!downloadUrl" class="convert-action-btn full-width primary-btn"
           [disabled]="!selectedFile || !cropWidth || !cropHeight || progress > 0" (click)="uploadCropFile()">
           <ng-container *ngIf="progress === 0">
             <i class="fas fa-crop"></i> Crop Image
           </ng-container>
-          <ng-container *ngIf="progress > 0">
+          <ng-container *ngIf="progress > 0 && progress < 100">
             <i class="fas fa-spinner fa-spin"></i> Cropping... {{ progress }}%
           </ng-container>
         </button>
@@ -342,7 +349,7 @@
           <p class="upload-status-text">Processing...</p>
         </div>
 
-        <!-- Success -->
+        <!-- Success Message -->
         <div class="result-message-box success mt-3" *ngIf="downloadUrl">
           <p>✅ Cropped successfully!</p>
           <a [href]="downloadUrl" [download]="downloadedFileName" class="download-btn">
@@ -360,5 +367,72 @@
         </div>
       </div>
     </section>
+
+    <section id="image-to-text-section" class="tool-section" [class.active]="activeTool === 'image-to-text'">
+    <h2 class="tool-section-title">
+        <i class="fas fa-font"></i> Image to Text (OCR)
+    </h2>
+
+    <div class="main-upload-content image-to-text-section-content">
+        <div class="upload-area-container">
+            <label class="upload-box main-select-button shadow" [class.drag-over]="isDragging"
+                (dragover)="onDragOverSingle($event)" (dragleave)="onDragLeaveSingle($event)" (drop)="onDropSingle($event)">
+                <input #fileInputSingle type="file" accept="image/*" (change)="onFileSelectedSingle($event)" hidden />
+                <div class="upload-content" (click)="fileInputSingle.click()">
+                    <ng-container *ngIf="!selectedFile">
+                        <button type="button" class="select-file-btn primary-btn">📁 Choose Image</button> <span
+                            class="or-drop-text mt-1">or drag & drop here</span>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedFile">
+                        <div class="file-preview-area mt-2">
+                            <i class="fas fa-file-image file-image-icon"></i>
+                            <span class="file-name-display">{{ selectedFile.name }}</span>
+                            <button type="button" class="remove-file-preview-btn ml-2"
+                                (click)="$event.stopPropagation(); resetSingleFile()">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
+                        </div>
+                    </ng-container>
+                </div>
+            </label>
+        </div>
+
+        <div class="main-action-section">
+            <button class="action-btn primary-btn full-width" *ngIf="!extractedText"
+                [disabled]="!selectedFile || isLoadingText || progress > 0" (click)="extractText()">
+                <ng-container *ngIf="!isLoadingText && progress === 0">
+                    <i class="fas fa-clipboard-list"></i> Extract Text
+                </ng-container>
+                <ng-container *ngIf="isLoadingText || progress > 0">
+                    <i class="fas fa-spinner fa-spin"></i> {{ progress > 0 ? 'Processing...' : 'Extracting...' }}
+                </ng-container>
+            </button>
+
+            <div class="progress-info-block" *ngIf="(isLoadingText || progress > 0) && !extractedText">
+                <p class="upload-percentage-text">{{ progress }}%</p>
+                <div class="progress-indicator upload-progress-bar">
+                    <div class="progress-bar-fill" [style.width.%]="progress"></div>
+                </div>
+                <p class="upload-status-text">Processing image for text...</p>
+            </div>
+
+            <div class="result-message-box success mt-3" *ngIf="extractedText">
+                <h3>Extracted Text:</h3>
+                <textarea rows="15" readonly>{{ extractedText }}</textarea>
+                <div class="action-buttons-group"> <button class="copy-button primary-btn" (click)="copyTextToClipboard()">Copy Text</button>
+                    <button class="reset-conversion-btn secondary-btn" (click)="resetSingleFile()">
+                        <i class="fas fa-redo-alt"></i> Extract Another
+                    </button>
+                </div>
+            </div>
+
+            <div class="result-message-box error mt-3" *ngIf="errorMessage && !extractedText">
+                <p>❌ Error: {{ errorMessage }}</p>
+                <button class="reset-conversion-btn secondary-btn" (click)="resetSingleFile()">Try Again</button>
+            </div>
+        </div>
+    </div>
+</section>
   </div>
 </div>

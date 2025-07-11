@@ -26,7 +26,7 @@
       <!-- 🖼️ Compress Tools Dropdown -->
       <div class="dropdown" (mouseenter)="onDropdownHover(true, 'compress')"
         (mouseleave)="onDropdownHover(false, 'compress')" (click)="toggleDropdown('compress')">
-        <a class="dropbtn"  routerLink="/image-tools"  routerLinkActive="active">
+        <a class="dropbtn" routerLink="/image-tools" routerLinkActive="active">
           🖼️ Image Tools <i class="fas fa-caret-down"></i>
         </a>
         <div class="dropdown-content" [class.show]="showCompressTools">
@@ -34,10 +34,13 @@
             Compress Image</a>
           <a [routerLink]="['/image-tools', 'resize-image']" (click)="hideCompressTools()">📐
             Resize Image</a>
-          <a [routerLink]="['/image-tools', 'convert-image']"(click)="hideCompressTools()">🔄
+          <a [routerLink]="['/image-tools', 'convert-image']" (click)="hideCompressTools()">🔄
             Convert Image</a>
-          <a [routerLink]="['/image-tools', 'crop-image']"  (click)="hideCompressTools()">✂️ Crop
+          <a [routerLink]="['/image-tools', 'crop-image']" (click)="hideCompressTools()">✂️ Crop
             Image</a>
+          <a [routerLink]="['/image-tools', 'image-to-text']" (click)="hideCompressTools()">
+            <i class="fas fa-text-width"></i> OCR Image to Text
+          </a>
         </div>
       </div>
 
