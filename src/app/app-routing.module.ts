@@ -11,6 +11,9 @@ import { RemovePdfPasswordComponent } from './tools/remove-pdf-password/remove-p
 import { WordEditComponent } from './tools/word-edit/word-edit.component';
 import { CompressPdfComponent } from './tools/compress-pdf/compress-pdf.component';
 import { ImageToolsComponent } from './tools/image-tools/image-tools.component';
+import { PrivacyPolicyComponent } from './tools/privacy-policy/privacy-policy.component';
+import { ContactComponent } from './tools/contact/contact.component';
+import { AboutComponent } from './tools/about/about.component';
 
 const routes: Routes = [
   // ✅ PDF Tools with optional parameter to switch tools like /pdf-tools/compress-pdf
@@ -21,9 +24,11 @@ const routes: Routes = [
 { path: 'image-tools/:tool', component: ImageToolsComponent },
 { path: 'image-tools', component: ImageToolsComponent },
 
-
-
-
+// ✅ New Static Pages
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: 'about', component: AboutComponent },
+  
   // ✅ Other direct tools
   { path: 'edit-pdf', component: EditPdfComponent },
   { path: 'word-to-pdf', component: WordToPdfComponent },

@@ -18,6 +18,9 @@ import { RemovePdfPasswordComponent } from './tools/remove-pdf-password/remove-p
 import { WordEditComponent } from './tools/word-edit/word-edit.component'; // ✅ Import
 import { CompressPdfComponent } from './tools/compress-pdf/compress-pdf.component';
 import { ImageToolsComponent } from './tools/image-tools/image-tools.component';
+import { PrivacyPolicyComponent } from './tools/privacy-policy/privacy-policy.component';
+import { ContactComponent } from './tools/contact/contact.component';
+import { AboutComponent } from './tools/about/about.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,7 @@ import { ImageToolsComponent } from './tools/image-tools/image-tools.component';
     ImageToolsComponent,
     MergeImagesToPdfComponent,
     PdfToolsComponent,
-    CompressPdfComponent 
+    CompressPdfComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,12 @@ import { ImageToolsComponent } from './tools/image-tools/image-tools.component';
     // ✅ Import standalone components here
     ProtectPdfPasswordComponent,
     RemovePdfPasswordComponent,
-   WordEditComponent
+   WordEditComponent,
+
+   // ✅ Add the new standalone components to imports
+    PrivacyPolicyComponent,
+    ContactComponent,
+    AboutComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

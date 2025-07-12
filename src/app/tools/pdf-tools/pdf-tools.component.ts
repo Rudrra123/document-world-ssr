@@ -286,6 +286,9 @@ ngOnInit(): void {
         this.reset();
         return;
     }
+    // Console log to debug
+console.log('Active Tool:', this.activeTool);
+console.log('API URL:', apiUrl);
 
     this.uploadSubscription = this.http.post(apiUrl, formData, {
       responseType: 'blob',
