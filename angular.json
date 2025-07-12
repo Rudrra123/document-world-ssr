@@ -20,7 +20,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "static.json"
+              "src/static.json"
             ],
             "styles": [
               "src/styles.css",
