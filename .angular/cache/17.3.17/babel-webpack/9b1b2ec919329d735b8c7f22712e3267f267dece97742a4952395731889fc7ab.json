@@ -1,0 +1,1 @@
+{"ast":null,"code":"// src/environments/environment.ts\nexport const environment = {\n  apiUrl: 'http://localhost:8000/api',\n  production: false\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

@@ -1,0 +1,1 @@
+{"ast":null,"code":"// src/environments/environment.prod.ts\nexport const environment = {\n  apiUrl: 'https://api.mydoctools.com/api',\n  production: true\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
