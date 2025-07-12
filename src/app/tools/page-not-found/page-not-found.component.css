@@ -1,0 +1,30 @@
+.not-found-container {
+  text-align: center;
+  padding: 80px 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.not-found-container h1 {
+  font-size: 3rem;
+  color: #e74c3c;
+}
+
+.not-found-container p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+.home-link {
+  margin-top: 20px;
+  display: inline-block;
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.home-link:hover {
+  background-color: #2980b9;
+}

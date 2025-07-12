@@ -14,6 +14,7 @@ import { ImageToolsComponent } from './tools/image-tools/image-tools.component';
 import { PrivacyPolicyComponent } from './tools/privacy-policy/privacy-policy.component';
 import { ContactComponent } from './tools/contact/contact.component';
 import { AboutComponent } from './tools/about/about.component';
+import { PageNotFoundComponent } from './tools/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   // ✅ PDF Tools with optional parameter to switch tools like /pdf-tools/compress-pdf
@@ -40,11 +41,14 @@ const routes: Routes = [
 
   // ✅ Default and fallback routes
   { path: '', redirectTo: '/pdf-tools', pathMatch: 'full' },
-  { path: '**', redirectTo: '/pdf-tools' }
+
+  // ✅ 404 Page
+  { path: '**', component: PageNotFoundComponent }
+  
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
