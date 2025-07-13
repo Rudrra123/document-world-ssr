@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: document-world-ssr
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build:ssr
+    startCommand: npm run serve:ssr
+    envVars:
+      - key: NODE_VERSION
+        value: 18
