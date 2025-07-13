@@ -32,7 +32,8 @@ import { AboutComponent } from './tools/about/about.component';
     ImageToolsComponent,
     MergeImagesToPdfComponent,
     PdfToolsComponent,
-    CompressPdfComponent
+    CompressPdfComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +49,6 @@ import { AboutComponent } from './tools/about/about.component';
    // ✅ Add the new standalone components to imports
     PrivacyPolicyComponent,
     ContactComponent,
-    AboutComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
