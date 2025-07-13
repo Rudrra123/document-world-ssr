@@ -1,0 +1,1 @@
+{"ast":null,"code":"export { AppServerModule as default } from './app/app.module.server';","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

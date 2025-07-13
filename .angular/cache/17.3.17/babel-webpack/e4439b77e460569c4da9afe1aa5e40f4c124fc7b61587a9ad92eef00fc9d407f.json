@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const environment = {\n  apiUrl: 'http://localhost:8000/api',\n  frontendUrl: 'http://localhost:4200',\n  // ✅ Added for SEO & routing\n  production: false\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
